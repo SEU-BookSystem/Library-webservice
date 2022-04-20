@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.BookDao">
+
+    <select id="getAllBook" resultType="booksystem.pojo.Book">
+        SELECT * FROM book ORDER BY volume DESC
+    </select>
+
+    <select id="getBookByShop" parameterType="String" resultType="booksystem.pojo.Book">
+        SELECT * FROM book where shop_id=(select id from shop where apply_status=2 and pass_status=1 and exist_status=1 and user_id=(select id from user where username=#{username}))ORDER BY volume DESC
+    </select>
+
+    <select id="getBookByName" parameterType="String" resultType="booksystem.pojo.Book">
+        SELECT * FROM book where book_name=#{book_name} ORDER BY volume DESC
+    </select>
+
+    <select id="getBookByPress" parameterType="String" resultType="booksystem.pojo.Book">
+        SELECT * FROM book where press=#{press} ORDER BY volume DESC
+    </select>
+
+    <update id="updateBook">
+        update book set book_name=#{book_name},author=#{author},price=#{price},
+                        repertory=#{repertory},press=#{press},edition=#{edition},print_time=#{print_time},
+                        main_category_id=#{main_category_id},second_category_id=#{second_category_id},
+                        shop_id=#{shop_id},update_time=now()
+        where id=#{book_id}
+    </update>
+
+    <insert id="addBook">
+        INSERT INTO book(id,book_name,author,price,volume,repertory,press,edition,
+                         print_time,image_b,image_s,main_category_id,second_category_id,shop_id,create_time,update_time)
+        VALUES(MD5(UUID()),#{book_name},#{author},#{price},#{volume},#{repertory},
+               #{press},#{edition},#{print_time},#{image_b},#{image_s},#{main_category_id},#{second_category_id},#{shop_id},now(),now());
+    </insert>
+
+    <update id="updateDetail">
+        update book set detail=#{detail},update_time=now() where id=#{book_id}
+    </update>
+
+    <update id="updateVolume">
+        update book set volume=#{volume},update_time=now() where id=#{book_id}
+    </update>
+    <update id="updateRepertory">
+        update book set repertory=#{repertory},update_time=now() where id=#{book_id}
+    </update>
+
+
+    <select id="selectBook" resultType="String">
+        select id from book where book_name=#{book_name} and author=#{author} and price=#{price}
+        and press=#{press} and edition=#{edition} and print_time=#{print_time}
+        and main_category_id=#{main_category_id} and second_category_id=#{second_category_id} and shop_id=#{shop_id}
+    </select>
+
+    <select id="getBookByID" parameterType="String" resultType="java.util.HashMap">
+        SELECT * FROM book where id=#{book_id}
+    </select>
+
+    <select id="getDetail" resultType="java.util.HashMap">
+        SELECT * ,(select shop_name from shop where id=shop_id) as shop_name,
+               (select category_name from main_category where id=main_category_id) as main_category,
+               (select category_name from second_category where id=second_category_id) as second_category
+        FROM book where id=#{book_id}
+    </select>
+
+    <delete id="deleteBook" parameterType="String">
+        delete from book where id=#{book_id}
+    </delete>
+
+    <delete id="deleteBooks" parameterType="java.lang.String" >
+        DELETE FROM book WHERE id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getPageCount" resultType="int">
+        SELECT count(id)
+        FROM book where repertory>=0
+        <choose>
+            <when test="main_category_id!=''">
+                and main_category_id=#{main_category_id}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test=" second_category_id!=''">
+                and second_category_id=#{second_category_id}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year !=''">
+                and year(print_time)=#{year}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year_before !=''">
+                and year(print_time)&lt;=#{year_before}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year_after !=''">
+                and year(print_time)&gt;=#{year_after}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="shop_id !=''">
+                and shop_id=#{shop_id}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <select id="getPage" resultType="java.util.HashMap">
+        SELECT *,(select shop_name from shop where id=shop_id) as shop_name,
+               (select category_name from main_category where id=main_category_id) as main_category,
+               (select category_name from second_category where id=second_category_id) as second_category
+               FROM book where repertory>=0
+        <choose>
+            <when test="main_id !=''">
+                and main_category_id=#{main_id}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="second_id !=''">
+                and second_category_id=#{second_id}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year !=''">
+                and year(print_time)=#{year}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year_before !=''">
+                and year(print_time)&lt;=#{year_before}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year_after !=''">
+                and year(print_time)&gt;=#{year_after}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="shop_id !=''">
+                and shop_id=#{shop_id}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by
+        <choose>
+            <when test="style==1">
+                volume DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="style==2">
+                print_time DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        limit #{start},#{book_num}
+    </select>
+
+    <select id="fuzzyQuery" resultType="java.util.HashMap">
+        SELECT *,(select shop_name from shop where id=shop_id) as shop_name,
+        (select category_name from main_category where id=main_category_id) as main_category,
+        (select category_name from second_category where id=second_category_id) as second_category
+        FROM book where repertory>=0
+        <choose>
+            <when test="queryWhat==0">
+                and (book_name like #{content} or author like #{content}
+                        or press like #{content} or detail like #{content})
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==1">
+                and book_name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and author like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and press like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and detail like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by
+        <choose>
+            <when test="style==1">
+                volume DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="style==2">
+                print_time DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        limit #{start},#{book_num}
+    </select>
+
+    <select id="fuzzyQueryCount" resultType="int">
+        SELECT count(id)
+        FROM book where repertory>=0
+        <choose>
+            <when test="queryWhat==0">
+                and (book_name like #{content} or author like #{content}
+                or press like #{content} or detail like #{content})
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==1">
+                and book_name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and author like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and press like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and detail like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <update id="updateStatus" parameterType="String">
+        update book set repertory=-1 where shop_id=#{shop_id}
+    </update>
+
+</mapper>

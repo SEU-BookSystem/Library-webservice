@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.OrderDao">
+
+    <insert id="addOrder">
+        INSERT INTO `order`(id,total,status,address_id,shop_id,user_id,create_time,update_time,send_time,firm_time)
+        VALUES(#{id},#{total},#{status},#{address_id},#{shop_id},#{user_id},now(),now(),now(),now() );
+    </insert>
+
+    <select id="getAllOrderIDByUser" resultType="String">
+        select id from `order` where user_id=(select id from user where username=#{username}) order by create_time desc
+    </select>
+
+    <select id="getAllOrderIDByShop" resultType="String">
+        select id from `order` where shop_id=#{shop_id} order by create_time desc
+    </select>
+
+    <select id="getAllOrderID" resultType="String">
+        select id from `order`
+        <choose>
+            <when test="identity==0">
+                where user_id=(select id from user where username=#{username})
+                <choose>
+                    <when test="status==0">
+                    </when>
+                    <otherwise>
+                        and status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==1">
+                where shop_id=(select id from shop where user_id=(select id from user where username=#{username})
+                    and apply_status=2 and pass_status=1 and exist_status=1)
+                <choose>
+                    <when test="status==0">
+                    </when>
+                    <otherwise>
+                        and status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==2">
+                <choose>
+                    <when test="status==0">
+                    </when>
+                    <otherwise>
+                        where status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by update_time desc limit #{start},#{order_num}
+    </select>
+
+    <select id="fuzzyOrderID" resultType="String">
+        select id from `order`
+                where user_id in (select id from user where username like #{content})
+                  or shop_id in (select id from shop where shop_name like #{content})
+                    or id in (select order_id from order_book where book_id in (select id from book where book_name like #{content}))
+            <choose>
+                <when test="status==0">
+                </when>
+                <otherwise>
+                    and status=#{status}
+                </otherwise>
+            </choose>
+        order by update_time desc limit #{start},#{order_num}
+    </select>
+
+    <select id="fuzzyOrderCount" resultType="int">
+        select count(id) from `order`
+        where user_id in (select id from user where username like #{content})
+        or shop_id in (select id from shop where shop_name like #{content})
+        or id in (select order_id from order_book where book_id in (select id from book where book_name like #{content}))
+        <choose>
+            <when test="status==0">
+            </when>
+            <otherwise>
+                and status=#{status}
+            </otherwise>
+        </choose>
+        order by update_time desc
+    </select>
+
+
+
+    <update id="updateStatus" >
+        update `order` set status=#{status}  where id=#{order_id}
+    </update>
+
+    <update id="updateFirmTime" parameterType="String">
+        update `order` set firm_time=now(),update_time=now() where id=#{order_id}
+    </update>
+
+    <update id="batUpdateFirmTime" parameterType="java.util.List">
+        update `order` set firm_time=now(),update_time=now()  where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateSendTime" parameterType="String">
+        update `order` set send_time=now(),update_time=now() where id=#{order_id}
+    </update>
+
+    <update id="batUpdateSendTime" parameterType="java.util.List">
+        update `order` set send_time=now(),update_time=now() where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+
+    <select id="getOrderByID" resultType="java.util.Map">
+        select * from `order` where id=#{order_id}
+    </select>
+
+    <select id="getOrderNum" resultType="int">
+        select count(*) from `order`
+        <choose>
+            <when test="identity==0">
+                where user_id=(select id from user where username=#{username})
+                <choose>
+                    <when test="status==0">
+                    </when>
+                    <otherwise>
+                        and status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==1">
+                where shop_id=(select id from shop where user_id=(select id from user where username=#{username})
+                and apply_status=2 and pass_status=1 and exist_status=1)
+                <choose>
+                    <when test="status==0">
+                    </when>
+                    <otherwise>
+                        and status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==2">
+                <choose>
+                    <when test="status==0">
+                    </when>
+                    <otherwise>
+                        where status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <delete id="deleteOrder" parameterType="java.util.List">
+        delete from `order` where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+        </foreach>
+    </delete>
+
+</mapper>

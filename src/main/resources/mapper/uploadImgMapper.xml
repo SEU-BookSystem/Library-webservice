@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="booksystem.dao.UploadImgDao">
+    <update id="updateUserImgUrl">
+        UPDATE user SET avatar_b=#{url_b},avatar_s=#{url_s} WHERE username=#{username}
+    </update>
+    <update id="updateShopImgUrl">
+        UPDATE shop SET avatar_b=#{url_b},avatar_s=#{url_s} WHERE id=#{shop_id}
+    </update>
+    <update id="updateBookImgUrl">
+        UPDATE book SET image_b=#{url_b},image_s=#{url_s} WHERE id=#{book_id};
+    </update>
+    <update id="updateReturnImgUrl">
+        UPDATE order_book SET image_b=#{url_b},image_s=#{url_s} WHERE id=#{order_book_id};
+    </update>
+    <select id="getUserImgUrl" resultType="java.util.HashMap">
+        SELECT avatar_b,avatar_s FROM user WHERE username=#{username};
+    </select>
+
+    <select id="getShopImgUrl" resultType="java.util.HashMap">
+        SELECT avatar_b,avatar_s FROM shop WHERE user_id=(SELECT id FROM user WHERE username=#{username});
+    </select>
+
+    <select id="getUserImgUrlById" resultType="java.util.HashMap">
+        SELECT avatar_b,avatar_s FROM user WHERE id=#{user_id};
+    </select>
+    <select id="getShopImgUrlById" resultType="java.util.HashMap">
+        SELECT avatar_b,avatar_s FROM shop WHERE id=#{shop_id};
+    </select>
+    <select id="getBookImgUrlById" resultType="java.util.HashMap">
+        SELECT image_b,image_s FROM book WHERE id=#{book_id};
+    </select>
+    <select id="getReturnImgUrlById" resultType="java.util.HashMap">
+        SELECT image_b,image_s FROM order_book WHERE id=#{order_book_id};
+    </select>
+</mapper>

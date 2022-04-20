@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.OrderBookDao">
+    <insert id="addOrderBook">
+        INSERT INTO order_book(id,book_id,order_id,number,rate,remark,return_status,return_reason,check_opinion,remark_time,image_s,image_b,remark_status,return_time,return_detail,transport_status,book_price)
+        VALUES(MD5(UUID()),#{book_id},#{order_id},#{number},#{rate},#{remark},#{return_status},#{return_reason},#{check_opinion},now(),#{image_s},#{image_b},#{remark_status},now(),#{return_detail},#{transport_status},#{book_price});
+    </insert>
+
+    <select id="getAllOrderBook" resultType="java.util.HashMap">
+        SELECT id as order_book_id,remark,order_id,number,return_status,return_reason,check_opinion,rate,book_id,book_price as book_total_price,
+               remark_time,image_s as return_image_s,image_b as return_image_b,remark_status,return_time,return_detail,transport_status,exchange_address_id,
+               (SELECT send_time FROM `order` WHERE id=order_id) as send_time,
+               (SELECT firm_time FROM `order` WHERE id=order_id) as firm_time,
+               (SELECT total FROM `order` WHERE id=order_id) as total,
+               (SELECT status FROM `order` WHERE id=order_id) as status,
+               (SELECT update_time FROM `order` WHERE id=order_id) as update_time,
+               (SELECT create_time FROM `order` WHERE id=order_id) as create_time,
+               (SELECT username FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as username,
+               (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+               (SELECT book_name FROM book WHERE id=book_id) as book_name,
+               (SELECT price FROM book WHERE id=book_id) as price,
+               (SELECT author FROM book WHERE id=book_id) as author,
+               (SELECT press FROM book WHERE id=book_id) as press,
+               (SELECT image_b FROM book WHERE id=book_id) as book_image_b,
+               (SELECT image_s FROM book WHERE id=book_id) as book_image_s,
+               (SELECT repertory FROM book WHERE id=book_id) as repertory,
+               (SELECT volume FROM book WHERE id=book_id) as volume,
+               (SELECT address_id FROM `order` WHERE id=order_id) as address_id,
+               (SELECT shop_name FROM shop WHERE id=(SELECT shop_id FROM `order`WHERE id=order_id)) as shop_name,
+               (SELECT shop_id FROM `order`WHERE id=order_id) as shop_id from order_book
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getAllOrderBookByUser" parameterType="java.util.List"  resultType="java.util.HashMap">
+        SELECT id as order_book_id,remark,order_id,number,return_status,return_reason,check_opinion,rate,book_price as book_total_price,
+               book_id,remark_time,image_s as return_image_s,image_b as return_image_b,remark_status,return_time,return_detail,transport_status,exchange_address_id,
+        (SELECT send_time FROM `order` WHERE id=order_id) as send_time,
+        (SELECT firm_time FROM `order` WHERE id=order_id) as firm_time,
+        (SELECT total FROM `order` WHERE id=order_id) as total,
+        (SELECT status FROM `order` WHERE id=order_id) as status,
+        (SELECT update_time FROM `order` WHERE id=order_id) as update_time,
+        (SELECT create_time FROM `order` WHERE id=order_id) as create_time,
+        (SELECT username FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as username,
+        (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+        (SELECT book_name FROM book WHERE id=book_id) as book_name,
+        (SELECT price FROM book WHERE id=book_id) as price,
+        (SELECT author FROM book WHERE id=book_id) as author,
+        (SELECT press FROM book WHERE id=book_id) as press,
+        (SELECT image_b FROM book WHERE id=book_id) as book_image_b,
+        (SELECT image_s FROM book WHERE id=book_id) as book_image_s,
+        (SELECT repertory FROM book WHERE id=book_id) as repertory,
+        (SELECT volume FROM book WHERE id=book_id) as volume,
+        (SELECT address_id FROM `order` WHERE id=order_id) as address_id,
+        (SELECT shop_name FROM shop WHERE id=(SELECT shop_id FROM `order`WHERE id=order_id)) as shop_name,
+        (SELECT shop_id FROM `order`WHERE id=order_id) as shop_id from order_book where order_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getAllOrderBookByShop" parameterType="java.util.List"  resultType="java.util.HashMap">
+        SELECT id as order_book_id,remark,order_id,number,return_status,return_reason,check_opinion,rate,book_price as book_total_price,
+               book_id,remark_time,image_s as return_image_s,image_b as return_image_b,remark_status,return_time,return_detail,transport_status,exchange_address_id,
+        (SELECT send_time FROM `order` WHERE id=order_id) as send_time,
+        (SELECT firm_time FROM `order` WHERE id=order_id) as firm_time,
+        (SELECT total FROM `order` WHERE id=order_id) as total,
+        (SELECT status FROM `order` WHERE id=order_id) as status,
+        (SELECT update_time FROM `order` WHERE id=order_id) as update_time,
+        (SELECT address_id FROM `order` WHERE id=order_id) as address_id,
+        (SELECT create_time FROM `order` WHERE id=order_id) as create_time,
+        (SELECT username FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as username,
+        (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+        (SELECT book_name FROM book WHERE id=book_id) as book_name,
+        (SELECT price FROM book WHERE id=book_id) as price,
+        (SELECT author FROM book WHERE id=book_id) as author,
+        (SELECT press FROM book WHERE id=book_id) as press,
+        (SELECT image_b FROM book WHERE id=book_id) as book_image_b,
+        (SELECT image_s FROM book WHERE id=book_id) as book_image_s,
+        (SELECT repertory FROM book WHERE id=book_id) as repertory,
+        (SELECT volume FROM book WHERE id=book_id) as volume,
+        (SELECT shop_name FROM shop WHERE id=(SELECT shop_id FROM `order`WHERE id=order_id)) as shop_name,
+        (SELECT shop_id FROM `order`WHERE id=order_id) as shop_id from order_book where order_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getOrderBookByID" resultType="java.util.HashMap">
+        SELECT id as order_book_id,remark,order_id,number,return_status,return_reason,check_opinion,rate,book_price as book_total_price,
+               book_id,remark_time,image_s as return_image_s,image_b as return_image_b,remark_status,return_time,return_detail,transport_status,exchange_address_id,
+               (SELECT send_time FROM `order` WHERE id=order_id) as send_time,
+               (SELECT firm_time FROM `order` WHERE id=order_id) as firm_time,
+               (SELECT total FROM `order` WHERE id=order_id) as total,
+               (SELECT update_time FROM `order` WHERE id=order_id) as update_time,
+               (SELECT status FROM `order` WHERE id=order_id) as status,
+               (SELECT create_time FROM `order` WHERE id=order_id) as create_time,
+               (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+               (SELECT username FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as username,
+               (SELECT book_name FROM book WHERE id=book_id) as book_name,
+               (SELECT price FROM book WHERE id=book_id) as price,
+               (SELECT author FROM book WHERE id=book_id) as author,
+               (SELECT press FROM book WHERE id=book_id) as press,
+               (SELECT image_b FROM book WHERE id=book_id) as book_image_b,
+               (SELECT image_s FROM book WHERE id=book_id) as book_image_s,
+               (SELECT repertory FROM book WHERE id=book_id) as repertory,
+               (SELECT volume FROM book WHERE id=book_id) as volume,
+               (SELECT address_id FROM `order` WHERE id=order_id) as address_id,
+               (SELECT shop_name FROM shop WHERE id=(SELECT shop_id FROM `order`WHERE id=order_id)) as shop_name,
+               (SELECT shop_id FROM `order`WHERE id=order_id) as shop_id from order_book where order_id=#{order_id}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getBookByID" resultType="java.util.Map">
+        select * from order_book where id=#{order_book_id}
+    </select>
+
+    <select id="getBook" resultType="java.util.Map">
+        SELECT id as order_book_id,remark,order_id,number,return_status,return_reason,check_opinion,rate,book_price as book_total_price,
+               book_id,remark_time,image_s as return_image_s,image_b as return_image_b,remark_status,return_time,return_detail,transport_status,exchange_address_id,
+               (SELECT send_time FROM `order` WHERE id=order_id) as send_time,
+               (SELECT firm_time FROM `order` WHERE id=order_id) as firm_time,
+               (SELECT total FROM `order` WHERE id=order_id) as total,
+               (SELECT update_time FROM `order` WHERE id=order_id) as update_time,
+               (SELECT status FROM `order` WHERE id=order_id) as status,
+               (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+               (SELECT create_time FROM `order` WHERE id=order_id) as create_time,
+               (SELECT username FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as username,
+               (SELECT book_name FROM book WHERE id=book_id) as book_name,
+               (SELECT price FROM book WHERE id=book_id) as price,
+               (SELECT author FROM book WHERE id=book_id) as author,
+               (SELECT press FROM book WHERE id=book_id) as press,
+               (SELECT image_b FROM book WHERE id=book_id) as book_image_b,
+               (SELECT image_s FROM book WHERE id=book_id) as book_image_s,
+               (SELECT repertory FROM book WHERE id=book_id) as repertory,
+               (SELECT volume FROM book WHERE id=book_id) as volume,
+               (SELECT address_id FROM `order` WHERE id=order_id) as address_id,
+               (SELECT shop_name FROM shop WHERE id=(SELECT shop_id FROM `order`WHERE id=order_id)) as shop_name,
+               (SELECT shop_id FROM `order`WHERE id=order_id) as shop_id from order_book where id=#{order_book_id}
+    </select>
+
+    <update id="updateRemark">
+        update order_book set remark=#{remark},rate=#{rate},remark_status=1,remark_time=now() where id=#{order_book_id}
+    </update>
+
+    <update id="updateReturn">
+        update order_book set return_reason=#{return_reason},return_detail=#{return_detail},return_status=#{return_status},
+                              transport_status=#{transport_status},return_time=now(),exchange_address_id=#{exchange_address_id}
+        where id=#{order_book_id}
+    </update>
+
+    <update id="updateReturnStatus">
+        update order_book set return_status=#{return_status},check_opinion=#{check_opinion}
+        where id=#{order_book_id}
+    </update>
+
+    <delete id="deleteOrderBook" parameterType="java.util.List">
+        delete from order_book where order_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getBookRemark" resultType="java.util.Map">
+        select rate,remark,remark_time,
+               (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+               (SELECT avatar_b FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as avatar_b,
+               (SELECT avatar_s FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as avatar_s
+               from order_book where book_id=#{book_id} and remark_status=1 order by remark_time desc
+    </select>
+
+    <select id="getRemark" resultType="java.util.Map">
+        select rate,remark,remark_time,book_id,
+               (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+               (SELECT avatar_b FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as avatar_b,
+               (SELECT avatar_s FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as avatar_s
+        from order_book
+        <choose>
+            <when test="identity==1">
+                where order_id in (select id from `order` where shop_id=
+        (select id from shop where user_id=(select id from user where username=#{username})
+                and apply_status=2 and pass_status=1 and exist_status=1 )) and remark_status=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==2">
+                where remark_status=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+         order by remark_time desc limit #{page_num},#{remark_num}
+    </select>
+
+    <select id="getRemarkNum" resultType="int">
+        select count(*) from order_book
+        <choose>
+            <when test="identity==1">
+                where order_id in (select id from `order` where shop_id=
+    (select id from shop where user_id=(select id from user where username=#{username})
+                and apply_status=2 and pass_status=1 and exist_status=1)) and remark_status=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==2">
+                where remark_status=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="getReback" resultType="java.util.Map">
+        select *,id as order_book_id,
+        (SELECT name FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as name,
+        (SELECT avatar_b FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as avatar_b,
+        (SELECT avatar_s FROM user WHERE id=(SELECT user_id FROM `order` WHERE id=order_id)) as avatar_s,
+        (SELECT shop_name from shop where id=(SELECT shop_id from book where id=book_id)) as shop_name,
+        (SELECT firm_time from `order` where id=order_id) as firm_time,
+        (SELECT status from `order` where id=order_id) as status
+        from order_book
+        <choose>
+            <when test="identity==0">
+                where order_id in (select id from `order` where user_id=
+                                        (select id from user where username=#{username}))
+                <choose>
+                    <when test="status==0">
+                        and return_status!=0 and return_status!=-1
+                    </when>
+                    <otherwise>
+                        and return_status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==1">
+                where order_id in (select id from `order` where shop_id=
+                (select id from shop where user_id=
+                (select id from user where username=#{username})
+                    and apply_status=2 and pass_status=1 and exist_status=1))
+                <choose>
+                    <when test="status==0">
+                        and return_status!=0 and return_status!=-1
+                    </when>
+                    <otherwise>
+                        and return_status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==2">
+                <choose>
+                    <when test="status==0">
+                        where return_status!=0 and return_status!=-1
+                    </when>
+                    <otherwise>
+                        where return_status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ORDER BY return_time DESC limit #{start},#{order_num}
+    </select>
+
+    <select id="getRebackCount" resultType="int">
+        select count(id) from order_book
+        <choose>
+            <when test="identity==0">
+                where order_id in (select id from `order` where user_id=
+                (select id from user where username=#{username}))
+                <choose>
+                    <when test="status==0">
+                        and return_status!=0 and return_status!=-1
+                    </when>
+                    <otherwise>
+                        and return_status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==1">
+                where order_id in (select id from `order` where shop_id=
+                (select id from shop where user_id=
+                (select id from user where username=#{username})
+                and apply_status=2 and pass_status=1 and exist_status=1))
+                <choose>
+                    <when test="status==0">
+                        and return_status!=0 and return_status!=-1
+                    </when>
+                    <otherwise>
+                        and return_status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="identity==2">
+                <choose>
+                    <when test="status==0">
+                        where return_status!=0 and return_status!=-1
+                    </when>
+                    <otherwise>
+                        where return_status=#{status}
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ORDER BY return_time DESC
+    </select>
+</mapper>
