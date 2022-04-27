@@ -8,6 +8,7 @@ import booksystem.service.UploadImgService;
 import java.io.*;
 
 import booksystem.utils.ImgUtils;
+import booksystem.utils.SFTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -152,5 +153,20 @@ public class UploadImgServiceImpl implements UploadImgService {
         String fileUrl_s=uploadImgDao.getReturnImgUrlById(order_book_id).get("image_s").toString();
         deleteImg(fileUrl_b,fileUrl_s);
     }
+
+//    @Override
+//    public String uploadQuestionImg(MultipartFile img, String question_id) {
+//
+//
+//        File imgFile= SFTP.multipartFileToFile(img);
+//
+//        String fileUrl=SFTP.uploadImg(imgFile);
+//
+//
+//        //上传到数据库
+//        userDao.postImg(question_id,fileUrl);
+//
+//        return fileUrl;
+//    }
 
 }

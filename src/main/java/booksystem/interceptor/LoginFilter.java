@@ -89,12 +89,6 @@ public class LoginFilter implements Filter{
                             }
 
                         }else if(identity==1){
-                            if(str[1].equals("admin")){
-                                map.put("msg",ResultEnum.AUTHORITY_FAIL.getMsg());
-                                map.put("code",ResultEnum.AUTHORITY_FAIL.getCode());
-                                authority=false;
-                            }
-                        }else if(identity==2){
 
                         }else {
                             authority=false;
@@ -107,9 +101,9 @@ public class LoginFilter implements Filter{
                             System.out.println(LogUtils.getNowTime()+"访问用户: "+username);
 
                             filterChain.doFilter(servletRequest,servletResponse);
-                            if(identity==0||identity==1){
+                            if(identity==0){
                                 userDao.accessTime(username);
-                            }else if(identity==2){
+                            }else if(identity>=1){
                                 adminDao.accessTime(username);
                             }
                             return;

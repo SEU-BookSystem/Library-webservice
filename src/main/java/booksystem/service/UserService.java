@@ -12,7 +12,7 @@ public interface UserService {
     User getUserByName(String username);
     User getUserByID(String user_id);
     //添加
-    void addUser(String email,String password,String name,int status,String activationCode);
+    void addUser(String username,String password,String id_card,int age,String gender);
 
     //删除用户
     void deleteUser(String user_id);

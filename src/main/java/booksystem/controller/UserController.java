@@ -70,44 +70,23 @@ public class UserController {
         }
     }
 
-    @PostMapping("/sendEmail")
-    @ResponseBody
-    public Result sendEmail(@RequestParam("password") String password,
-                            @RequestParam("email") String email,
-                            @RequestParam("name") String name) {
-        int result = userService.sendMimeMail(password, email, name);
-        if (result == 1) {
-            return Result.ok(ResultEnum.SUCCESS.getMsg());
-        } else if(result==-1){
-            return Result.error(ResultEnum.User_IS_EXISTS.getCode(), ResultEnum.User_IS_EXISTS.getMsg());
-        }
-        else if(result ==2){
-            return Result.error(ResultEnum.EMAIL_FAIL.getCode(), ResultEnum.EMAIL_FAIL.getMsg());
-        }
-        else{
-            return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
-        }
-    }
+    @PostMapping("/admin/register")
+    public Result register(@RequestParam("phone") String phone,
+                           @RequestParam("password") String password,
+                           @RequestParam("gender") String gender,
+                           @RequestParam("age") String age,
+                           @RequestParam("id_card") String id_card) {
 
-    @PostMapping("/registerUser")
-    public Result register(@RequestParam("password") String password,
-                           @RequestParam("email") String email,
-                           @RequestParam("name") String name,
-                           @RequestParam("activationCode") String activationCode) {
-        int result=userService.register(password, email, name, activationCode);
-        if (result ==2) {
-            return Result.ok(ResultEnum.SUCCESS.getMsg());
-        } else if(result==1){
-            return Result.error(ResultEnum.CODE_FAIL.getCode(), ResultEnum.CODE_FAIL.getMsg());
-        }else if(result==0)
-        {
-            return Result.error(ResultEnum.EMAIL_FAIL.getCode(), ResultEnum.EMAIL_FAIL.getMsg());
-        }else if(result==-1)
-        {
-            return Result.error(ResultEnum.Code_OUTTIME.getCode(), ResultEnum.Code_OUTTIME.getMsg());
+        if(phone.isEmpty()||password.isEmpty()||id_card.isEmpty()||age.isEmpty()||gender.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
         }else
         {
-            return Result.error(ResultEnum.REGISTER_FAIL.getCode(), ResultEnum.REGISTER_FAIL.getMsg());
+            User user=userService.getUserByName(phone);
+            if(user!=null){
+                return Result.error(23,"已有该用户无法重复添加");
+            }
+            userService.addUser(phone, password,id_card, Integer.parseInt(age),gender);
+            return Result.ok(ResultEnum.SUCCESS.getMsg());
         }
     }
 
