@@ -19,8 +19,8 @@
     </select>
 
     <insert id="addUser">
-        INSERT INTO user(id,username,password,email,status,activationCode,name,avatar_b,avatar_s,identity,create_time,update_time,access_time)
-        VALUES(MD5(UUID()),#{email},#{password},#{email},0,null,#{name},"http://47.94.131.208:8888/img/original/avatar.jpg","http://47.94.131.208:8888/img/compression/avatar.jpg",0,now(),now(),now());
+        INSERT INTO user(user_id,username,password,name,id_card,age,gender,status,create_time,update_time,access_time)
+        VALUES(MD5(UUID()),#{username},#{password},#{username},#{id_card},#{age},#{gender},0,now(),now(),now());
     </insert>
 
     <update id="updateUser"  parameterType="booksystem.pojo.User">

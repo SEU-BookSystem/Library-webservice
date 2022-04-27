@@ -27,14 +27,13 @@ public class UserLogin {
                 Result result=Result.error(ResultEnum.LOGIN_FAIL.getCode(),ResultEnum.LOGIN_FAIL.getMsg());
                 return result;
             }
-            String token=TokenUtils.generateToken(username,password,2);
-            Result result=Result.ok("登录成功").put("token",token).put("identity",2);
+            String token=TokenUtils.generateToken(username,password,1);
+            Result result=Result.ok("登录成功").put("token",token).put("identity",1);
             return result;
 
         }
-        int identity=userLoginService.getIdentity(username);
-        String token=TokenUtils.generateToken(username,password,identity);
-        Result result=Result.ok("登录成功").put("token",token).put("identity",identity);
+        String token=TokenUtils.generateToken(username,password,0);
+        Result result=Result.ok("登录成功").put("token",token).put("identity",0);
         return result;
     }
 }
