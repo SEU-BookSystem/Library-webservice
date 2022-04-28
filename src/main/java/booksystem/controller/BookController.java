@@ -1,20 +1,15 @@
 package booksystem.controller;
 
 import booksystem.dao.BookDao;
-import booksystem.pojo.Book;
-import booksystem.pojo.User;
 import booksystem.service.BookService;
 import booksystem.service.UploadImgService;
 import booksystem.utils.Result;
 import booksystem.utils.ResultEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins="*",maxAge = 3600)
 @RestController
@@ -30,14 +25,13 @@ public class BookController {
     public Result getAllBook(ServletRequest request)
     {
 //        String token=((HttpServletRequest)request).getHeader("token");
-//        bookService.getAllBook();
-//        return Result.ok().put("data",);
+        bookService.getAllBook();
         return Result.ok().put("data",bookService.getAllBook());
     }
 
 
     //单本删除
-    @DeleteMapping("/book/delete")
+    @DeleteMapping("/admin/book/delete")
     public Result deleteBook(@RequestParam("isbn") String isbn) {
         if(isbn.isEmpty()) {
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(), ResultEnum.DATA_IS_NULL.getMsg());
@@ -46,7 +40,8 @@ public class BookController {
         return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 
-    @DeleteMapping("/book/multiDelete")
+    //批量删除
+    @DeleteMapping("/admin/book/multiDelete")
     public Result multiDeleteBook(@RequestParam("isbns") List<String> isbns) {
         if(isbns.isEmpty()){
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());

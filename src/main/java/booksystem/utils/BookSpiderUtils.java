@@ -18,7 +18,7 @@ import ch.qos.logback.classic.Level;
 import booksystem.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import booksystem.pojo.Book;
-
+import org.springframework.stereotype.Service;
 
 public class BookSpiderUtils {
     @Autowired
@@ -80,7 +80,10 @@ public class BookSpiderUtils {
                 if (strings[i].equals("出版年:"))
                     date = strings[i + 1].split("-")[0];
                 if (strings[i].contains("作者"))
-                    author = strings[i + 1];
+                    if (strings[i+1].equals(":"))
+                        author = strings[i + 2];
+                    else
+                        author = strings[i + 1];
             }
         }
         return new String[]{image, detail, publisher, date, author};
@@ -114,7 +117,7 @@ public class BookSpiderUtils {
             webClient.close();
         }
 
-        webClient.waitForBackgroundJavaScript(3000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
+        webClient.waitForBackgroundJavaScript(60000);//异步JS执行需要耗时,所以这里线程要阻塞30秒,等待异步JS执行结束
 
         String pageXml = page.asXml();//直接将加载完成的页面转换成xml格式的字符串
         Document document = Jsoup.parse(pageXml);//获取html文档
@@ -124,10 +127,11 @@ public class BookSpiderUtils {
 
     @Test
     public void test() {
-        String id = "2004198930";
-        int count = 56;
+//        String id = "2004198930";
+        int count = 59;
+        int id=100000;
 
-        for (int i = 1056; i < 1200; i++) {
+        for (int i = 1059; i < 1200; i++) {
             ArrayList<String> data = new ArrayList<String>();
             //爬取网页
             Document document = getData("http://my1.hzlib.net/opac/book/" + String.valueOf(i));
@@ -135,7 +139,6 @@ public class BookSpiderUtils {
             count = count + 1;
             //逐一解析数据
             Elements es = document.select("tr[data-sort]");//获取相关节点元素
-//            System.out.println(es.text());
             if (es.size() > 9) {
                 for (Element e : es) {
                     data.add(e.text());
@@ -149,10 +152,7 @@ public class BookSpiderUtils {
                 book.setIsbn(getIsbn(data));
                 book.setPage_num(getPage_num(data.get(4)));
                 book.setPrice(getPrice(data.get(2)));
-                book.setReference_num(getReference_num(data));
-//                book.setPublisher(getPublisher(data.get(5)));
-//                book.setAuthor(getAuthor(data.get(1)));
-//                book.setDate(getDate(data.get(5)));
+                book.setReference_num(getReference_num(data).substring(0, 2)+"-"+String.valueOf(id));
 
                 String array[] = ask(book.getIsbn());
                 if (array[0].equals("") || !array[0].contains(".jpg"))
@@ -164,6 +164,7 @@ public class BookSpiderUtils {
                 book.setAuthor(array[4]);
                 book.setCategory_id(getReference_num(data).substring(0, 2));
 //                bookDao.addBook(book);
+                id++;
                 System.out.println(book);
             }
         }
