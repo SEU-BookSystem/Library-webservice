@@ -1,5 +1,6 @@
 package booksystem.controller;
 
+import booksystem.dao.UserDao;
 import booksystem.pojo.User;
 import booksystem.service.UploadImgService;
 import booksystem.service.UserService;
@@ -21,7 +22,8 @@ public class UserController {
     UserService userService;
     @Autowired
     UploadImgService uploadImgService;
-
+    @Autowired
+    UserDao userDao;
     //获取所有用户
     @RequestMapping("/admin/getAllUser")
     public Result getAllUser(){
@@ -91,31 +93,22 @@ public class UserController {
     }
 
     //删除一个用户
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/admin/deleteUser")
     public Result deleteUser(@RequestParam("username") String username){
-        User user=userService.getUserByName(username);
-        if(user==null)
-        {
-            return Result.error(ResultEnum.User_NOT_EXIST.getCode(),ResultEnum.User_NOT_EXIST.getMsg());
-        }
-        userService.deleteUser(user.getId());
-        User result=userService.getUserByName(username);
-        if(result==null)
-        {
-            return Result.ok(ResultEnum.SUCCESS.getMsg());
-        }else{
-            return Result.error(ResultEnum.DELETE_FAIL.getCode(),ResultEnum.DELETE_FAIL.getMsg());
-        }
+        userDao.deleteUser(username);
+        return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 
     //更新用户
     @PostMapping("/updateUser")
     public Result updateUser(@RequestParam("password") String password,
                              @RequestParam("name") String name,
+                             @RequestParam("age") String age,
+                             @RequestParam("gender") String gender,
                              ServletRequest request){
         String token=((HttpServletRequest)request).getHeader("token");
         String username= TokenUtils.parseToken(token).get("username").toString();
-        int result=userService.updateUser(username,password,name);
+        int result=userService.updateUser(username,password,name,Integer.parseInt(age),gender);
         if(result!=0)
         {
             return Result.ok(ResultEnum.SUCCESS.getMsg());
@@ -156,7 +149,7 @@ public class UserController {
                               @RequestParam("password") String password,
                               @RequestParam("email") String email){
         User user=userService.getUserByID(user_id);
-        userService.updateUser(user.getUsername(),password,name);
+        //userService.updateUser(user.getUsername(),password,name);
         userService.updateEmail(user_id, email);
         return Result.ok(ResultEnum.SUCCESS.getMsg());
     }

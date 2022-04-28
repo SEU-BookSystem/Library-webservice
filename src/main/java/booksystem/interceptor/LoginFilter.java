@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 public class LoginFilter implements Filter{
     final String[] allowUrl={
-            "login","registerUser","test","sendEmail","book","category","favicon.ico","alipay"
+            "login","registerUser","test","category","favicon.ico","alipay"
     };
     @Autowired
     UserDao userDao;
@@ -48,7 +48,6 @@ public class LoginFilter implements Filter{
         System.out.println(LogUtils.getNowTime()+"访问参数: "+ LogUtils.getParams(request));
         Map<String,Object> map = new HashMap<>();
         String url =  ((HttpServletRequest)servletRequest).getRequestURI();
-
         if(url != null){
             String[] str=url.split("/");
             //登录请求直接放行
@@ -64,6 +63,7 @@ public class LoginFilter implements Filter{
                 }
 
             }
+
             if(isAllowUrl){
                 filterChain.doFilter(servletRequest,servletResponse);
                 return;
@@ -128,7 +128,7 @@ public class LoginFilter implements Filter{
         }
 
         //执行
-        filterChain.doFilter(servletRequest, servletResponse);
+        //filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
