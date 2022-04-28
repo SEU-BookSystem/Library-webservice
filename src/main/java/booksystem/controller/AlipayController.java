@@ -52,7 +52,7 @@ public class AlipayController {
             int number=Integer.valueOf(map.get("number").toString());
             int volume=Integer.valueOf(map.get("volume").toString());
             String book_id=map.get("book_id").toString();
-            bookDao.updateVolume(book_id,volume+number);
+//            bookDao.updateVolume(book_id,volume+number);
         }
         return "<h1>Pay Success</h1>";
     }

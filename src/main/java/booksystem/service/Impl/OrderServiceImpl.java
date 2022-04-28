@@ -39,8 +39,8 @@ public class OrderServiceImpl implements OrderService {
             List<Map<String,Object>> order_book_list=orderBookDao.getOrderBookByID(order_id);
             //更改库存
             for(Map<String,Object> book:order_book_list) {
-                bookDao.updateRepertory(book.get("book_id").toString(),
-                        Integer.valueOf(book.get("repertory").toString())+Integer.valueOf(book.get("number").toString()));
+//                bookDao.updateRepertory(book.get("book_id").toString(),
+//                        Integer.valueOf(book.get("repertory").toString())+Integer.valueOf(book.get("number").toString()));
             }
             return 1;
         }
@@ -66,8 +66,8 @@ public class OrderServiceImpl implements OrderService {
             //更改库存
             List<Map<String,Object>> order_book_list=orderBookDao.getOrderBookByID(order_id);
             for(Map<String,Object> book:order_book_list) {
-                bookDao.updateRepertory(book.get("book_id").toString(),
-                        Integer.valueOf(book.get("repertory").toString())+Integer.valueOf(book.get("number").toString()));
+//                bookDao.updateRepertory(book.get("book_id").toString(),
+//                        Integer.valueOf(book.get("repertory").toString())+Integer.valueOf(book.get("number").toString()));
             }
         }
         return 1;
@@ -164,21 +164,21 @@ public class OrderServiceImpl implements OrderService {
 
         //切割 分成order_book项
         for( int j=0;j<length;j++) {
-            String book_id=CartItemList.get(j).get("book_id").toString();
-            sums[j]=Integer.valueOf(CartItemList.get(j).get("sum").toString());
-
-            HashMap<String,Object> book=bookDao.getBookByID(book_id);
-            shop_ids[j]=book.get("shop_id").toString();
-            price[j]=Double.valueOf(book.get("price").toString());
-
-            //检查库存
-            int repertory1=Integer.valueOf(book.get("repertory").toString());
-            if(sums[j]>repertory1&&repertory1<=0)
-                return -1;//库存不足
-
-            repertory[j]=repertory1;
-            orderBook=new OrderBook(null,book_id,"",sums[j],"",5.0,0,-1,"","",null,(double)(price[j]*sums[j]),"","",null,"",-1,"");
-            orderBookList.add(j,orderBook);
+//            String book_id=CartItemList.get(j).get("book_id").toString();
+//            sums[j]=Integer.valueOf(CartItemList.get(j).get("sum").toString());
+//
+//            HashMap<String,Object> book=bookDao.getBookByID(book_id);
+//            shop_ids[j]=book.get("shop_id").toString();
+//            price[j]=Double.valueOf(book.get("price").toString());
+//
+//            //检查库存
+//            int repertory1=Integer.valueOf(book.get("repertory").toString());
+//            if(sums[j]>repertory1&&repertory1<=0)
+//                return -1;//库存不足
+//
+//            repertory[j]=repertory1;
+//            orderBook=new OrderBook(null,book_id,"",sums[j],"",5.0,0,-1,"","",null,(double)(price[j]*sums[j]),"","",null,"",-1,"");
+//            orderBookList.add(j,orderBook);
         }
 
         //去重 得到不重复的shop_id
@@ -204,7 +204,7 @@ public class OrderServiceImpl implements OrderService {
                     orderBookList.get(i).setOrder_id(order_id);
                     orderBookDao.addOrderBook(orderBookList.get(i));
                     //更改库存
-                    bookDao.updateRepertory(CartItemList.get(i).get("book_id").toString(),repertory[i]-sums[i]);
+//                    bookDao.updateRepertory(CartItemList.get(i).get("book_id").toString(),repertory[i]-sums[i]);
                     total+=sums[i]*price[i];
                     //删除购物车的东西
                     cartItemDao.deleteCartItem(CartItem_Ids.get(i));
@@ -219,18 +219,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int addDirectOrder(String book_id, int sum,String address_id,String shop_id,String username,String order_id) {
-        HashMap<String,Object> book=bookDao.getBookByID(book_id);
-        int repertory=Integer.valueOf(book.get("repertory").toString());
-        if(sum>repertory&&repertory<=0)
-            return -1;//库存不足
-        //更改库存
-        bookDao.updateRepertory(book_id,repertory-sum);
-        double total=sum*Double.valueOf(book.get("price").toString());
-        //订单状态为2未付款 退款状态为-1 无效
-        Order order=new Order(order_id,total,2,address_id,shop_id,userDao.getUserByName(username).getId(),null,null,null,null);
-        orderDao.addOrder(order);
-        OrderBook orderBook=new OrderBook("",book_id,order_id,sum,"",5.0,0,-1,"","",null,total,"","",null,"",-1,"");
-        orderBookDao.addOrderBook(orderBook);
+//        HashMap<String,Object> book=bookDao.getBookByID(book_id);
+//        int repertory=Integer.valueOf(book.get("repertory").toString());
+//        if(sum>repertory&&repertory<=0)
+//            return -1;//库存不足
+//        //更改库存
+////        bookDao.updateRepertory(book_id,repertory-sum);
+//        double total=sum*Double.valueOf(book.get("price").toString());
+//        //订单状态为2未付款 退款状态为-1 无效
+//        Order order=new Order(order_id,total,2,address_id,shop_id,userDao.getUserByName(username).getId(),null,null,null,null);
+//        orderDao.addOrder(order);
+//        OrderBook orderBook=new OrderBook("",book_id,order_id,sum,"",5.0,0,-1,"","",null,total,"","",null,"",-1,"");
+//        orderBookDao.addOrderBook(orderBook);
         return 1;
     }
 

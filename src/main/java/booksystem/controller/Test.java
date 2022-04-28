@@ -36,8 +36,8 @@ public class Test {
     public String testBook(@RequestParam("book_id") String book_id,
                            @RequestParam("volume") String volume,
                            @RequestParam("repertory") String repertory){
-        bookDao.updateRepertory(book_id,Integer.parseInt(repertory));
-        bookDao.updateVolume(book_id,Integer.parseInt(volume));
+//        bookDao.updateRepertory(book_id,Integer.parseInt(repertory));
+//        bookDao.updateVolume(book_id,Integer.parseInt(volume));
         return "OK";
     }
 

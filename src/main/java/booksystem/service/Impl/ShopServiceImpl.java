@@ -162,7 +162,7 @@ public class ShopServiceImpl implements ShopService {
         Shop shop=shopList.get(0);
 
         //将所有店铺的书的库存置为-1 无法购买
-        bookDao.updateStatus(shop.getId());
+//        bookDao.updateStatus(shop.getId());
         //更改为注销状态 已审核2 通过1 注销2
         shop.setApply_status(2);
         shop.setPass_status(1);

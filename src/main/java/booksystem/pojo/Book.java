@@ -1,110 +1,48 @@
 package booksystem.pojo;
 
 public class Book {
-    private String id;
-    private String book_name;
-    private String author;
-    private double price;
-    private int volume;//销量
-    private int repertory;//库存
-    private String press;//出版社
-    private String edition;//版本
-    private String print_time;
-    private String image_b;
-    private String image_s;
-    private String main_category_id;//目录id
-    private String second_category_id;//目录id
-    private String shop_id;//店铺id
-    private String create_time;
-    private String update_time;
+    String reference_num;//索引号
+    String book_name;//书名
+    String author;//作者
+    String page_num;//页码
+    String price;//价格
+    String isbn;//isbn
+    String detail;//详情
+    String publisher;//出版社
+    String image;//图片
+    String date;//出版时间
+    String category_id;//分类id
+    int num;//库存
+    String update_time;//更新时间
 
     public Book(){}
 
-    public Book(String id, String book_name, String author, double price, int volume, int repertory, String press, String edition, String print_time, String image_b, String image_s, String main_category_id, String second_category_id, String shop_id, String create_time, String update_time) {
-        this.id = id;
+    public Book(String reference_num, String book_name, String author, String page_num, String price, String isbn, String detail, String publisher, String image, String date, String category_id, int num, String update_time) {
+        this.reference_num = reference_num;
         this.book_name = book_name;
         this.author = author;
+        this.page_num = page_num;
         this.price = price;
-        this.volume = volume;
-        this.repertory = repertory;
-        this.press = press;
-        this.edition = edition;
-        this.print_time = print_time;
-        this.image_b = image_b;
-        this.image_s = image_s;
-        this.main_category_id = main_category_id;
-        this.second_category_id = second_category_id;
-        this.shop_id = shop_id;
-        this.create_time = create_time;
+        this.isbn = isbn;
+        this.detail = detail;
+        this.publisher = publisher;
+        this.image = image;
+        this.date = date;
+        this.category_id = category_id;
+        this.num = num;
         this.update_time = update_time;
     }
 
-    public String getId() {
-        return id;
+    public void setNum(int num) {
+        this.num = num;
     }
 
-    public String getBook_name() {
-        return book_name;
+    public void setUpdate_time(String update_time) {
+        this.update_time = update_time;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public int getVolume() {
-        return volume;
-    }
-
-    public int getRepertory() {
-        return repertory;
-    }
-
-    public String getPress() {
-        return press;
-    }
-
-    public String getEdition() {
-        return edition;
-    }
-
-    public String getPrint_time() {
-        return print_time;
-    }
-
-    public String getImage_b() {
-        return image_b;
-    }
-
-    public String getImage_s() {
-        return image_s;
-    }
-
-    public String getMain_category_id() {
-        return main_category_id;
-    }
-
-    public String getSecond_category_id() {
-        return second_category_id;
-    }
-
-    public String getShop_id() {
-        return shop_id;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public String getUpdate_time() {
-        return update_time;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setReference_num(String reference_num) {
+        this.reference_num = reference_num;
     }
 
     public void setBook_name(String book_name) {
@@ -115,76 +53,106 @@ public class Book {
         this.author = author;
     }
 
-    public void setPrice(double price) {
+    public void setPage_num(String page_num) {
+        this.page_num = page_num;
+    }
+
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
-    public void setRepertory(int repertory) {
-        this.repertory = repertory;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
-    public void setPress(String press) {
-        this.press = press;
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
     }
 
-    public void setEdition(String edition) {
-        this.edition = edition;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public void setPrint_time(String print_time) {
-        this.print_time = print_time;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public void setImage_b(String image_b) {
-        this.image_b = image_b;
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
     }
 
-    public void setImage_s(String image_s) {
-        this.image_s = image_s;
+
+    public int getNum() {
+        return num;
     }
 
-    public void setMain_category_id(String main_category_id) {
-        this.main_category_id = main_category_id;
+    public String getUpdate_time() {
+        return update_time;
     }
 
-    public void setSecond_category_id(String second_category_id) {
-        this.second_category_id = second_category_id;
+    public String getReference_num() {
+        return reference_num;
     }
 
-    public void setShop_id(String shop_id) {
-        this.shop_id = shop_id;
+    public String getBook_name() {
+        return book_name;
     }
 
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setUpdate_time(String update_time) {
-        this.update_time = update_time;
+    public String getPage_num() {
+        return page_num;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getCategory_id() {
+        return category_id;
     }
 
     @Override
     public String toString() {
         return "Book{" +
-                "id='" + id + '\'' +
+                "reference_num='" + reference_num + '\'' +
                 ", book_name='" + book_name + '\'' +
                 ", author='" + author + '\'' +
-                ", price=" + price +
-                ", volume=" + volume +
-                ", repertory=" + repertory +
-                ", press='" + press + '\'' +
-                ", edition='" + edition + '\'' +
-                ", print_time='" + print_time + '\'' +
-                ", image_b='" + image_b + '\'' +
-                ", image_s='" + image_s + '\'' +
-                ", main_category_id='" + main_category_id + '\'' +
-                ", second_category_id='" + second_category_id + '\'' +
-                ", shop_id='" + shop_id + '\'' +
-                ", create_time='" + create_time + '\'' +
+                ", page_num='" + page_num + '\'' +
+                ", price='" + price + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", detail='" + detail + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", image='" + image + '\'' +
+                ", date='" + date + '\'' +
+                ", category_id='" + category_id + '\'' +
+                ", num=" + num +
                 ", update_time='" + update_time + '\'' +
                 '}';
     }

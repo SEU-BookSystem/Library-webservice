@@ -13,37 +13,37 @@ import java.util.Map;
 @Mapper
 public interface BookDao {
 
-    //获取所有图书
-    HashMap<String,Object> getAllBook();
+    //获取所有种图书
+    List<Map<String,Object>> getAllBook();
+    //根据书名查询图书
+    HashMap<String,Object> getBookByName(String bookname);
+    //根据出版社查询图书
+    HashMap<String,Object> getBookByPublisher(String publisher);
+    //根据isbn号查找图书
+    HashMap<String,Object> getBookByIsbn(String isbn);
 
 
-    //添加
-    int addBook(Book book);
-    //查找用户
-    String selectBook( String book_name, String author, double price, String press, String edition, String print_time,String main_category_id,String second_category_id,String shop_id);
+    //添加一种书
+    void addBook(Book book);
     //删除
-    int deleteBook(String book_id);
-    int deleteBooks(List<String> book_ids);
+    void deleteBook(String isbn);
+    void deleteBooks(List<String> isbns);
     //更新图书信息
-    int updateBook(String book_id,String book_name, String author, double price, int repertory, String press, String edition, String print_time,String main_category_id,String second_category_id,String shop_id);
-    void updateDetail(String book_id,String detail);
-    //根据book_id获取图书
-    HashMap<String,Object> getBookByID(String book_id);
+    void updateBook(Book book);
 
+    //查找用户
+//    String selectBook( String book_name, String author, double price, String press, String edition, String print_time,String main_category_id,String second_category_id,String shop_id);
+//    void updateDetail(String book_id,String detail);
+
+//    HashMap<String,Object> getBookByID(String book_id);
+
+    //分页和模糊查询
     List<Map<String,Object>> getPage(int start, int book_num, int style, String main_id, String second_id, String year,String year_before,String year_after,String shop_id);
     List<Map<String,Object>> fuzzyQuery(int start, int book_num, int style, int queryWhat, String content);
 
-    void updateVolume(String book_id,int volume);//更新销量
-    void updateRepertory(String book_id,int repertory);//更新库存
-
-    Map<String,Object> getDetail(String book_id);
-
     int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);
-
-
     int fuzzyQueryCount(int queryWhat, String content);
 
-
-    void updateStatus(String shop_id);
-
+    //有关联错误待删
+//    void updateStatus(String shop_id);
 }

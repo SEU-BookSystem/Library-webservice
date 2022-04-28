@@ -263,11 +263,11 @@ public class OrderBookServiceImpl implements OrderBookService{
             HashMap<String,Object>tmp=new HashMap<>();
             tmp.put("remark",remark.get(i));
             remark.get(i).put("remark_time",remark.get(i).get("remark_time").toString().replace("T"," "));
-            Map<String,Object>book=bookDao.getBookByID(remark.get(i).get("book_id").toString());
-            book.put("update_time",book.get("update_time").toString().replace("T"," "));
-            book.put("create_time",book.get("create_time").toString().replace("T"," "));
-            book.put("print_time",book.get("print_time").toString().replace("T"," "));
-            tmp.put("book",book);
+//            Map<String,Object>book=bookDao.getBookByID(remark.get(i).get("book_id").toString());
+//            book.put("update_time",book.get("update_time").toString().replace("T"," "));
+//            book.put("create_time",book.get("create_time").toString().replace("T"," "));
+//            book.put("print_time",book.get("print_time").toString().replace("T"," "));
+//            tmp.put("book",book);
             res.add(tmp);
         }
         return res;
@@ -297,11 +297,11 @@ public class OrderBookServiceImpl implements OrderBookService{
             list.get(i).put("remark_time",list.get(i).get("remark_time").toString().replace("T"," "));
             list.get(i).put("return_time",list.get(i).get("return_time").toString().replace("T"," "));
             list.get(i).put("firm_time",list.get(i).get("firm_time").toString().replace("T"," "));
-            Map<String,Object>book=bookDao.getBookByID(list.get(i).get("book_id").toString());
-            book.put("update_time",book.get("update_time").toString().replace("T"," "));
-            book.put("create_time",book.get("create_time").toString().replace("T"," "));
-            book.put("print_time",book.get("print_time").toString().replace("T"," "));
-            list.get(i).put("books",book);
+//            Map<String,Object>book=bookDao.getBookByID(list.get(i).get("book_id").toString());
+//            book.put("update_time",book.get("update_time").toString().replace("T"," "));
+//            book.put("create_time",book.get("create_time").toString().replace("T"," "));
+//            book.put("print_time",book.get("print_time").toString().replace("T"," "));
+//            list.get(i).put("books",book);
             res.add(list.get(i));
         }
         return res;
