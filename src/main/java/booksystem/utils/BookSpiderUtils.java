@@ -1,5 +1,6 @@
 package booksystem.utils;
 
+import booksystem.service.BookItemService;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -14,13 +15,23 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import ch.qos.logback.classic.Level;
 import booksystem.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import booksystem.pojo.Book;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins="*",maxAge = 3600)
+@RestController
 public class BookSpiderUtils {
+    @Autowired
+    BookItemService bookItemService;
     @Autowired
     BookDao bookDao;
 
@@ -80,7 +91,7 @@ public class BookSpiderUtils {
                 if (strings[i].equals("出版年:"))
                     date = strings[i + 1].split("-")[0];
                 if (strings[i].contains("作者"))
-                    if (strings[i+1].equals(":"))
+                    if (strings[i + 1].equals(":"))
                         author = strings[i + 2];
                     else
                         author = strings[i + 1];
@@ -125,13 +136,16 @@ public class BookSpiderUtils {
     }
 
 
-    @Test
-    public void test() {
+    //    static int id=100071;
+    @PostMapping("/spider")
+    public Result test(@RequestParam("id") int id,
+                       @RequestParam("count") int count,
+                       @RequestParam("limit") int limit) {
+        ArrayList<Book> bookList = new ArrayList<Book>();
 //        String id = "2004198930";
-        int count = 59;
-        int id=100000;
+//        int count = 11800;
 
-        for (int i = 1059; i < 1200; i++) {
+        for (int i = count; i < limit; i++) {
             ArrayList<String> data = new ArrayList<String>();
             //爬取网页
             Document document = getData("http://my1.hzlib.net/opac/book/" + String.valueOf(i));
@@ -152,7 +166,7 @@ public class BookSpiderUtils {
                 book.setIsbn(getIsbn(data));
                 book.setPage_num(getPage_num(data.get(4)));
                 book.setPrice(getPrice(data.get(2)));
-                book.setReference_num(getReference_num(data).substring(0, 2)+"-"+String.valueOf(id));
+                book.setReference_num(getReference_num(data).substring(0, 2) + "-" + String.valueOf(id));
 
                 String array[] = ask(book.getIsbn());
                 if (array[0].equals("") || !array[0].contains(".jpg"))
@@ -163,10 +177,18 @@ public class BookSpiderUtils {
                 book.setDate(array[3]);
                 book.setAuthor(array[4]);
                 book.setCategory_id(getReference_num(data).substring(0, 2));
-//                bookDao.addBook(book);
+
+                Random rd = new Random();
+                book.setNum(rd.nextInt(3) + 1);
                 id++;
                 System.out.println(book);
+                bookDao.addBook(book);
+                bookItemService.addBookItem(book.getNum(),book.getReference_num());
+//                bookList.add(book);
             }
         }
+//        return bookList;
+        return Result.ok();
     }
 }
+

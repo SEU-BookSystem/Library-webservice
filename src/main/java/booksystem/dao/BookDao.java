@@ -16,11 +16,13 @@ public interface BookDao {
     //获取所有种图书
     List<Map<String,Object>> getAllBook();
     //根据书名查询图书
-    HashMap<String,Object> getBookByName(String bookname);
+    Map<String,Object> getBookByName(String bookname);
     //根据出版社查询图书
-    HashMap<String,Object> getBookByPublisher(String publisher);
+    Map<String,Object> getBookByPublisher(String publisher);
     //根据isbn号查找图书
-    HashMap<String,Object> getBookByIsbn(String isbn);
+    Map<String,Object> getBookByIsbn(String isbn);
+    //根据reference_num查找图书
+    Map<String,Object> getBookByReferenceNum(String reference_num);
 
 
     //添加一种书

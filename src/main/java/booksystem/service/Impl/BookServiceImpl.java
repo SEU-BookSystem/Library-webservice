@@ -1,12 +1,12 @@
 package booksystem.service.Impl;
 
 import booksystem.dao.BookDao;
+import booksystem.dao.BookItemDao;
 import booksystem.pojo.Book;
 import booksystem.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +15,8 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     BookDao bookDao;
+    @Autowired
+    BookItemDao bookItemDao;
 
     @Override
     public List<Map<String,Object>> getAllBook() {
@@ -29,6 +31,17 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBooks(List<String> isbns) {
         bookDao.deleteBooks(isbns);
+    }
+
+    @Override
+    public int addBook(String reference_num, String book_name, String author, String page_num,
+                       String price, String isbn, String detail, String publisher, String image,
+                       String date, String category_id, int num) {
+        if(bookDao.getBookByReferenceNum(reference_num)==null&&num<0)
+            return 0;
+        Book book=new Book(reference_num,book_name,author,page_num,price,isbn,detail,publisher,image,date,category_id,num,null);
+        bookDao.addBook(book);
+        return 1;
     }
 
 

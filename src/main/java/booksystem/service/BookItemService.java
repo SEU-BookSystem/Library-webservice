@@ -14,9 +14,10 @@ public interface BookItemService {
 
     //查询同一reference_num的图书
     List<Map<String,Object>> getBookItemByReferenceNum(String reference_num);
+//    Map<String,Object> getBookItemByBarCode(int bar_code);
 
     //根据bar_code删除一本图书
-    void deletBookItem(int bar_code);
+    int deleteBookItem(int bar_code);
     //根据bar_code批量删除
     void deleteBookItems(List<Integer> bar_codes);
 

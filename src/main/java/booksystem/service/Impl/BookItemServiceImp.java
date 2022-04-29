@@ -28,11 +28,6 @@ public class BookItemServiceImp implements BookItemService {
         }
         return 0;
     }
-//    @Test
-//    public void test()
-//    {
-//        addBookItem(2,"1");
-//    }
 
     @Override
     public void updateBookItem(int bar_code, String reference_num, int status, String address) {
@@ -51,8 +46,11 @@ public class BookItemServiceImp implements BookItemService {
     }
 
     @Override
-    public void deletBookItem(int bar_code) {
-        bookItemDao.deletBookItem(bar_code);
+    public int deleteBookItem(int bar_code) {
+        if(bookItemDao.getBookItemByBarCode(bar_code)==null)
+            return 0;
+        bookItemDao.deleteBookItem(bar_code);
+        return 1;
     }
 
     @Override

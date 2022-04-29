@@ -32,6 +32,20 @@ public class BookItemController {
         return Result.ok().put("data",bookItemService.getBookItemByReferenceNum(reference_num));
     }
 
+    @DeleteMapping("/admin/book/deleteBookItem")
+    public Result deleteBookItem(@RequestParam("bar_code") int bar_code)
+    {
+        int result=bookItemService.deleteBookItem(bar_code);
+        if(result==1)
+            return Result.ok();
+        else
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+    }
 
-
+    @DeleteMapping("/admin/book/deleteMultiBookItem")
+    public Result deleteMultiBookItem(@RequestParam("bar_codes") List<Integer> bar_codes)
+    {
+        bookItemService.deleteBookItems(bar_codes);
+        return Result.ok();
+    }
 }

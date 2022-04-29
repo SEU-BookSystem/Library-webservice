@@ -45,12 +45,12 @@
 <!--    </delete>-->
 
 
-    <select id="getBookItemByBarCode" parameterType="int" resultType="booksystem.pojo.BookItem">
-        SELECT * FROM bookitem where bar_code={bar_code}
+    <select id="getBookItemByBarCode" parameterType="int" resultType="Map">
+        SELECT * FROM bookitem where bar_code=#{bar_code}
     </select>
 
     <select id="getBookItemByReferenceNum" parameterType="String" resultType="booksystem.pojo.BookItem">
-        SELECT * FROM bookitem where reference_num={reference_num}
+        SELECT * FROM bookitem where reference_num=#{reference_num}
     </select>
 
     <insert id="addBookItem" parameterType="booksystem.pojo.BookItem">

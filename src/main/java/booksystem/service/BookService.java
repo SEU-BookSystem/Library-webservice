@@ -14,6 +14,11 @@ public interface BookService {
     void deleteBook(String isbn);
     void deleteBooks(List<String> isbns);
 
+    //添加某种图书信息
+    int addBook(String reference_num, String book_name, String author, String page_num,
+                String price, String isbn, String detail, String publisher, String image,
+                String date, String category_id, int num);
+
     //根据
 //    //根据商家username获取图书
 //    List<Book>getBookByShop(String username);

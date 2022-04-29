@@ -1,14 +1,18 @@
 package booksystem.controller;
 
 import booksystem.dao.BookDao;
+import booksystem.pojo.Book;
+import booksystem.service.BookItemService;
 import booksystem.service.BookService;
-import booksystem.service.UploadImgService;
+import booksystem.utils.BookSpiderUtils;
 import booksystem.utils.Result;
 import booksystem.utils.ResultEnum;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins="*",maxAge = 3600)
@@ -17,9 +21,10 @@ public class BookController {
     @Autowired
     BookService bookService;
     @Autowired
-    UploadImgService uploadImgService;
+    BookItemService bookItemService;
     @Autowired
     BookDao bookDao;
+
 
     @RequestMapping("/book/getAllBook")
     public Result getAllBook(ServletRequest request)
@@ -46,9 +51,50 @@ public class BookController {
         if(isbns.isEmpty()){
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
         }
-        bookDao.deleteBooks(isbns);
+//        bookDao.deleteBooks(isbns);
         return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
+
+    //添加图书
+    @PostMapping("/admin/book/add")
+    public Result addBook(@RequestParam("reference_num") String reference_num,
+                          @RequestParam("book_name") String book_name,
+                          @RequestParam("author") String author,
+                          @RequestParam("page_num") String page_num,
+                          @RequestParam("price") String price,
+                          @RequestParam("isbn") String isbn,
+                          @RequestParam("detail") String detail,
+                          @RequestParam("publisher") String publisher,
+                          @RequestParam("image") String image,
+                          @RequestParam("date") String date,
+                          @RequestParam("category_id") String category_id,
+                          @RequestParam("num") int num)
+    {
+        int result1=bookService.addBook(reference_num,book_name,author,
+                page_num,price,isbn,detail,publisher,image,date,category_id,num);
+        if(result1==1)
+        {
+            int result2=bookItemService.addBookItem(num,reference_num);
+            if (result2==1)
+                return Result.ok();
+        }
+        return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
+    }
+
+//    @PostMapping("/spider")
+//    public Result test(@RequestParam("id") int id,
+//                       @RequestParam("count") int count,
+//                       @RequestParam("limit") int limit)
+//    {
+//        BookSpiderUtils bookSpiderUtils=new BookSpiderUtils();
+//        ArrayList<Book> bookList=bookSpiderUtils.getBooks(id,count,limit);
+//        for(Book book:bookList)
+//        {
+//            bookDao.addBook(book);
+//            bookItemService.addBookItem(book.getNum(),book.getReference_num());
+//        }
+//        return Result.ok();
+//    }
 
 //    /**
 //     * @param page_num 第几页

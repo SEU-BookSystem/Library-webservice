@@ -19,6 +19,10 @@
         SELECT * FROM book where isbn=#{isbn} ORDER BY update_time DESC
     </select>
 
+    <select id="getBookByReferenceNum" parameterType="String" resultType="booksystem.pojo.Book">
+        SELECT * FROM book where reference_num=#{reference_num} ORDER BY update_time DESC
+    </select>
+
     <update id="updateBook">
         update book set book_name=#{book_name},author=#{author},price=#{price},publisher=#{publisher},
                         page_num=#{page_num},detail=#{detail},image=#{image},`date`=#{date},
