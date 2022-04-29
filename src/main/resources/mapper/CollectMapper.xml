@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.CollectDao">
+
+    <select id="getCollectionByUser" resultType="Map">
+        select collection_id,c.reference_num,user_id,create_time,b.book_name,b.author,b.category_id,
+               b.date,b.detail,b.image,b.image,b.num,b.page_num,b.price,b.publisher
+        from collection as c , book as b
+        where user_id=(select user_id from user where username=#{username})
+          AND c.reference_num=b.reference_num ORDER BY create_time DESC
+    </select>
+
+    <select id="getCollectionNum" resultType="int">
+        select count(*) from collection where user_id=(select user_id from user where username=#{username})
+    </select>
+
+    <select id="getBook" resultType="Map">
+        select * from collection where user_id=(select user_id from user where username=#{username})
+                                   and reference_num=#{reference_num}
+    </select>
+
+    <insert id="addCollection">
+        insert into collection(collection_id,reference_num,user_id,create_time)
+        values(MD5(UUID()),#{reference_num},(select user_id from user where username=#{username}),now())
+    </insert>
+
+    <delete id="deleteBook">
+        delete from collection where collection_id=#{collection_id}
+    </delete>
+
+    <delete id="deleteBooks">
+        DELETE FROM collection WHERE collection_id IN
+        <foreach collection="list" item="collection_id" open="(" close=")" separator=",">
+            #{collection_id}
+        </foreach>
+    </delete>
+</mapper>

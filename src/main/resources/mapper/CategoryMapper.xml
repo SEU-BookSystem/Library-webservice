@@ -3,61 +3,74 @@
 
 <mapper namespace="booksystem.dao.CategoryDao">
 
-    <select id="getAllCategory" resultType="java.util.HashMap">
-        select id as second_id,category_name as second_name,
-               (select id from main_category where id=pid) as main_id,
-               (select category_name from main_category where id=pid) as main_name,
-               (select count(id) from book where second_category_id=second_id) as book_num
-               from second_category
-    </select>
 
-    <select id="getAllMainCategory" resultType="java.util.HashMap">
-        select id as main_id,category_name as main_name,
-        (select count(id) from book where main_category_id=main_id) as book_num
-        from main_category
-    </select>
-
-    <select id="getMainCategory" resultType="String">
-        select id from main_category where category_name=#{name}
-    </select>
-
-    <select id="getSecondCategory" resultType="String">
-        select id from second_category where category_name=#{name} and
-        pid=(select id from main_category where category_name=#{main_name})
-    </select>
-
-    <select id="getParentCategory" resultType="java.util.HashMap">
-        select id,category_name from main_category where id=(select pid from second_category where id=#{id})
-    </select>
-
-    <insert id="addMainCategory" >
-        insert into main_category(id,category_name,create_time,update_time)
-        values(MD5(UUID()),#{name},now(),now())
+    <insert id="addCategory" parameterType="booksystem.pojo.Category">
+        insert into category value(#{category_id},#{category_name},#{pid},#{num})
     </insert>
 
-    <insert id="addSecondCategory" >
-        insert into second_category(id,category_name,pid,create_time,update_time)
-        values(MD5(UUID()),#{name},(select id from main_category where category_name=#{main_name}),now(),now())
-    </insert>
-
-    <delete id="deleteMainCategory">
-        delete from second_category where pid=#{id};
-        delete from main_category where id=#{id}
-    </delete>
-
-    <delete id="deleteSecondCategory">
-        delete from second_category where id=#{id}
-    </delete>
-
-    <update id="updateMainCategory">
-        update main_category set category_name=#{name}, update_time=now()
-        where id=#{id}
+    <update id="updateCategory" parameterType="booksystem.pojo.Category">
+        update category set ,category_name=#{category_name},pid=#{pid},num=#{num}
+        where category_id=#{category_id}
     </update>
 
-    <update id="updateSecondCategory">
-        update second_category set category_name=#{name},update_time=now()
-        where id=#{id}
-    </update>
+    <select id="getCategoryById" resultType="Map">
+        select * from category where category_id=#{category_id}
+    </select>
+<!--    <select id="getAllCategory" resultType="java.util.HashMap">-->
+<!--        select id as second_id,category_name as second_name,-->
+<!--               (select id from main_category where id=pid) as main_id,-->
+<!--               (select category_name from main_category where id=pid) as main_name,-->
+<!--               (select count(id) from book where second_category_id=second_id) as book_num-->
+<!--               from second_category-->
+<!--    </select>-->
+
+<!--    <select id="getAllMainCategory" resultType="java.util.HashMap">-->
+<!--        select id as main_id,category_name as main_name,-->
+<!--        (select count(id) from book where main_category_id=main_id) as book_num-->
+<!--        from main_category-->
+<!--    </select>-->
+
+<!--    <select id="getMainCategory" resultType="String">-->
+<!--        select id from main_category where category_name=#{name}-->
+<!--    </select>-->
+
+<!--    <select id="getSecondCategory" resultType="String">-->
+<!--        select id from second_category where category_name=#{name} and-->
+<!--        pid=(select id from main_category where category_name=#{main_name})-->
+<!--    </select>-->
+
+<!--    <select id="getParentCategory" resultType="java.util.HashMap">-->
+<!--        select id,category_name from main_category where id=(select pid from second_category where id=#{id})-->
+<!--    </select>-->
+
+<!--    <insert id="addMainCategory" >-->
+<!--        insert into main_category(id,category_name,create_time,update_time)-->
+<!--        values(MD5(UUID()),#{name},now(),now())-->
+<!--    </insert>-->
+
+<!--    <insert id="addSecondCategory" >-->
+<!--        insert into second_category(id,category_name,pid,create_time,update_time)-->
+<!--        values(MD5(UUID()),#{name},(select id from main_category where category_name=#{main_name}),now(),now())-->
+<!--    </insert>-->
+
+<!--    <delete id="deleteMainCategory">-->
+<!--        delete from second_category where pid=#{id};-->
+<!--        delete from main_category where id=#{id}-->
+<!--    </delete>-->
+
+<!--    <delete id="deleteSecondCategory">-->
+<!--        delete from second_category where id=#{id}-->
+<!--    </delete>-->
+
+<!--    <update id="updateMainCategory">-->
+<!--        update main_category set category_name=#{name}, update_time=now()-->
+<!--        where id=#{id}-->
+<!--    </update>-->
+
+<!--    <update id="updateSecondCategory">-->
+<!--        update second_category set category_name=#{name},update_time=now()-->
+<!--        where id=#{id}-->
+<!--    </update>-->
 
 
 </mapper>
