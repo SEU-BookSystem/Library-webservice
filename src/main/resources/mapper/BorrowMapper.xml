@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.BorrowDao">
+
+    <insert id="addBorrow" parameterType="booksystem.pojo.Borrow">
+        insert into borrow(lend_id,user_id,start_time,end_time,bar_code,is_lend_again,`status`,is_borrow,update_time)
+        values (MD5(UUID()),#{user_id},#{start_time},#{end_time},#{bar_code},0,#{status},#{is_borrow},now())
+    </insert>
+
+    <select id="getBorrowNumByUser" resultType="int">
+        select COUNT(*) from borrow where `status` in (1,2) and user_id=#{user_id}
+    </select>
+
+    <select id="getOvertimeBorrow" resultType="Map">
+        select * from borrow where `status`=2 and user_id=#{user_id}
+    </select>
+
+    <update id="updateStatus" >
+        update borrow set `status`=#{status},update_time=now() where lend_id=#{lend_id}
+    </update>
+
+    <select id="getBorrowByBarCode" resultType="Map">
+        select * from borrow where  `status` in (1,2) and bar_code=#{bar_code}
+    </select>
+
+    <update id="renew">
+        update borrow set is_lend_again=1,update_time=now(),end_time=#{end_time}
+        where bar_code=#{bar_code} and `status`=1
+    </update>
+
+
+</mapper>

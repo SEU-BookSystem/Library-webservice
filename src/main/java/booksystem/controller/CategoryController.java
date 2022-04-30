@@ -16,11 +16,23 @@ public class CategoryController {
     @Autowired
     CategoryDao categoryDao;
 
-//    //获取所有目录
-//    @RequestMapping("/category/getAll")
-//    public Result getAllCategory(){
-//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",categoryService.getAllCategory());
-//    }
+    //获取所有目录
+    @RequestMapping("/category/getAll")
+    public Result getAllCategory(){
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",categoryService.getAllCategory());
+    }
+
+    //获取所有一级目录
+    @RequestMapping("/category/getMain")
+    public Result getMainCategory(){
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",categoryService.getMainCategory());
+    }
+
+    //获取所有一级目录
+    @RequestMapping("/category/getSecond")
+    public Result getSecondCategory(@RequestParam("category_id") String category_id){
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",categoryService.getSecondeCategory(category_id));
+    }
 //
 //    //添加一级目录
 //    @PostMapping("/admin/category/addMain")

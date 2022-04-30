@@ -19,6 +19,12 @@ public interface CategoryDao {
 
     //根据category_id查找目录
     Map<String,Object> getCategoryById(String category_id);
+    //获取所有目录
+    List<Map<String,Object>> getAllCategory();
+    //获取指定分类 pid=”0“ 一级 pid=category_id 二级
+    List<Map<String,Object>> getCategory(String category_id);
+//    //获取指定一级分类下的二级分类
+//    List<Map<String,Object>> getSecondCategory(String category_id);
 //    //获取所有目录
 //    List<Map<String,Object>> getAllCategory();
 //    List<Map<String,Object>> getAllMainCategory();

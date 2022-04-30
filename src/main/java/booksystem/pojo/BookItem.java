@@ -4,7 +4,7 @@ public class BookItem {
 
     int bar_code;
     String reference_num;
-    int status;//某本书的状态 0.在库  1.可借  2.已借未逾期 3.逾期 4.被预约  5.已丢失
+    int status;//1.在库 2.在馆 3.已借 4.预约
     String address;
 
     public BookItem() {

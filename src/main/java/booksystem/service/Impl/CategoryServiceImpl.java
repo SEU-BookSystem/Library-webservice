@@ -31,6 +31,21 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryDao.getCategoryById(category_id);
     }
 
+    @Override
+    public List<Map<String, Object>> getAllCategory() {
+        return categoryDao.getAllCategory();
+    }
+
+    @Override
+    public List<Map<String, Object>> getMainCategory() {
+        return categoryDao.getCategory("0");
+    }
+
+    @Override
+    public List<Map<String, Object>> getSecondeCategory(String category_id) {
+        return categoryDao.getCategory(category_id);
+    }
+
 //    @Autowired
 //    CategoryDao categoryDao;
 //

@@ -16,13 +16,15 @@
     <select id="getCategoryById" resultType="Map">
         select * from category where category_id=#{category_id}
     </select>
-<!--    <select id="getAllCategory" resultType="java.util.HashMap">-->
-<!--        select id as second_id,category_name as second_name,-->
-<!--               (select id from main_category where id=pid) as main_id,-->
-<!--               (select category_name from main_category where id=pid) as main_name,-->
-<!--               (select count(id) from book where second_category_id=second_id) as book_num-->
-<!--               from second_category-->
-<!--    </select>-->
+
+    <select id="getAllCategory" resultType="java.util.HashMap">
+        select * from category
+    </select>
+
+    <select id="getCategory" resultType="Map">
+        select * from category where pid=#{pid}
+    </select>
+
 
 <!--    <select id="getAllMainCategory" resultType="java.util.HashMap">-->
 <!--        select id as main_id,category_name as main_name,-->

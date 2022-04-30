@@ -14,6 +14,15 @@ public interface CategoryService {
 
     //根据category_id查找目录
     Map<String,Object> getCategoryById(String category_id);
+
+    //返回所有目录分类
+    List<Map<String,Object>> getAllCategory();
+
+    //返回所有的一级分类
+    List<Map<String,Object>> getMainCategory();
+
+    //返回特定一级分类的二级分类
+    List<Map<String,Object>> getSecondeCategory(String category_id);
 //    //获取所有目录
 //    List<Map<String,Object>> getAllCategory();
 //    String getMainCategory(String name);
