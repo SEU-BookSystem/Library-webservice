@@ -8,7 +8,7 @@ public class Borrow {
     int bar_code;//条码号
     int is_lend_again;//是否续借
     int is_borrow;//0预约 1借阅
-    int status;//1.借阅未逾期 2.逾期 3.已还 4.预约成功  5.预约失败（包含取消预约等状态） 6.预约完成
+    int status;//1.借阅未逾期 2.逾期 3.已还 4.预约成功  5.预约失败（包含取消预约等状态）
     String update_time;
 
     public Borrow() {

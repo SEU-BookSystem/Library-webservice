@@ -1,6 +1,5 @@
 package booksystem;
 
-import booksystem.dao.DataDao;
 import booksystem.pojo.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,73 +7,71 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @SpringBootTest
 class BooksystemApplicationTests {
-    @Autowired
-    DataDao dataDao;
-
-    public String[] main={
-            "2ee0b589ae4106ff7d6f9470e93a376b","青春文学",
-            "6ccf8604ff7bf563caffc87ea1fb5051","小说",
-            "7fe401d7c0f81306fe3f1f0ddc3b10ce","少儿文学",
-            "974c4bc3021392a402b5fa104451de97","教育",
-            "b7d0703c35fd0220d39c3dc8e3a8618b","网络文学",
-            "db59caa5925e0e2840dc37ab4f08c6b7","文艺",
-            "f9ca1a86674fc4d8c8ddaf81646d8bb8","其他"
-
-    };
-
-    public String[] second={
-            "98ffbb4def4e74d180fe5446c73da665","童话",
-            "8dee7af04d086aabd4c34d65aff0cddd","人文社科",
-            "7e785167352c25447f1de155004da045","中国小说",
-            "7cf38fa465c1f04af5b47d65b2eeed49","外国小说",
-            "46203b7ad654419b21a041f64c2d38db","男频",
-            "c9f5d3ac418721085f494cc40372862a","女频",
-            "2d5e38d9b2b888add9c3c46f68196e9c","绘本",
-            "2fa55b9fa7689eefca601865b100deda","文学",
-            "e51b23c1dc2eca0e8bdcd0df0e0feff1","艺术",
-            "38b934b242067f25c5f3ce038aea9387","教材",
-            "0720939d1cb7a066e923e7d49d579e92","教辅资料",
-            "e72b3caf24db4b01ad8fd2176bb61362","经管",
-            "18a203dadb728d2b011b8b69c443e1e5","生活",
-            "4c3ae1510cf4d4e6bd129d6bd0a5bf78","科技",
-            "5c29911f2f23286c33282c6691d2cd9b","轻小说",
-            "b68ad7910ae5186b4e7935a0e9cdc4d7","动漫",
-            "7b1b12dd1e19375bf0b2cba43978212a","其他"
-    };
-
-    public String shop_id="15fde5133ce2450979487c9f274aee65";
-
-    public static boolean isChineseChar(char c) {
-        return String.valueOf(c).matches("[\u4e00-\u9fa5]");
-    }
-    public void addBook(String book_name,String author,double price,
-                        int repertory,String press,String print_time,
-                        String image_b,String image_s,String main_category_id,
-                        String second_category_id,String shop_id,String detail){
-        Book book=new Book();
-        dataDao.addBook(book_name,author,price,0,repertory,press,"",print_time,image_b,image_s,main_category_id,second_category_id,shop_id,detail);
-    }
-    public static boolean isValid(String strLink) {
-        URL url;
-        try {
-            url = new URL(strLink);
-            HttpURLConnection connt = (HttpURLConnection)url.openConnection();
-            connt.setRequestMethod("HEAD");
-            String strMessage = connt.getResponseMessage();
-            if (strMessage.compareTo("Not Found") == 0) {
-                return false;
-            }
-            connt.disconnect();
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
+//    @Autowired
+//    DataDao dataDao;
+//
+//    public String[] main={
+//            "2ee0b589ae4106ff7d6f9470e93a376b","青春文学",
+//            "6ccf8604ff7bf563caffc87ea1fb5051","小说",
+//            "7fe401d7c0f81306fe3f1f0ddc3b10ce","少儿文学",
+//            "974c4bc3021392a402b5fa104451de97","教育",
+//            "b7d0703c35fd0220d39c3dc8e3a8618b","网络文学",
+//            "db59caa5925e0e2840dc37ab4f08c6b7","文艺",
+//            "f9ca1a86674fc4d8c8ddaf81646d8bb8","其他"
+//
+//    };
+//
+//    public String[] second={
+//            "98ffbb4def4e74d180fe5446c73da665","童话",
+//            "8dee7af04d086aabd4c34d65aff0cddd","人文社科",
+//            "7e785167352c25447f1de155004da045","中国小说",
+//            "7cf38fa465c1f04af5b47d65b2eeed49","外国小说",
+//            "46203b7ad654419b21a041f64c2d38db","男频",
+//            "c9f5d3ac418721085f494cc40372862a","女频",
+//            "2d5e38d9b2b888add9c3c46f68196e9c","绘本",
+//            "2fa55b9fa7689eefca601865b100deda","文学",
+//            "e51b23c1dc2eca0e8bdcd0df0e0feff1","艺术",
+//            "38b934b242067f25c5f3ce038aea9387","教材",
+//            "0720939d1cb7a066e923e7d49d579e92","教辅资料",
+//            "e72b3caf24db4b01ad8fd2176bb61362","经管",
+//            "18a203dadb728d2b011b8b69c443e1e5","生活",
+//            "4c3ae1510cf4d4e6bd129d6bd0a5bf78","科技",
+//            "5c29911f2f23286c33282c6691d2cd9b","轻小说",
+//            "b68ad7910ae5186b4e7935a0e9cdc4d7","动漫",
+//            "7b1b12dd1e19375bf0b2cba43978212a","其他"
+//    };
+//
+//    public String shop_id="15fde5133ce2450979487c9f274aee65";
+//
+//    public static boolean isChineseChar(char c) {
+//        return String.valueOf(c).matches("[\u4e00-\u9fa5]");
+//    }
+//    public void addBook(String book_name,String author,double price,
+//                        int repertory,String press,String print_time,
+//                        String image_b,String image_s,String main_category_id,
+//                        String second_category_id,String shop_id,String detail){
+//        Book book=new Book();
+//        dataDao.addBook(book_name,author,price,0,repertory,press,"",print_time,image_b,image_s,main_category_id,second_category_id,shop_id,detail);
+//    }
+//    public static boolean isValid(String strLink) {
+//        URL url;
+//        try {
+//            url = new URL(strLink);
+//            HttpURLConnection connt = (HttpURLConnection)url.openConnection();
+//            connt.setRequestMethod("HEAD");
+//            String strMessage = connt.getResponseMessage();
+//            if (strMessage.compareTo("Not Found") == 0) {
+//                return false;
+//            }
+//            connt.disconnect();
+//        } catch (Exception e) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     @Test
     void contextLoads() {

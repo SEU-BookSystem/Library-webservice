@@ -1,9 +1,7 @@
 package booksystem.service.Impl;
 
 import booksystem.dao.*;
-import booksystem.pojo.Shop;
 import booksystem.pojo.User;
-import booksystem.service.ShopService;
 import booksystem.service.UploadImgService;
 import booksystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,15 +26,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UploadImgService uploadImgService;
     @Autowired
-    ShopDao shopDao;
-    @Autowired
-    OrderDao orderDao;
-    @Autowired
-    OrderBookDao orderBookDao;
-    @Autowired
     BookDao bookDao;
-    @Autowired
-    AddressDao addressDao;
 
     @Value("${spring.mail.username}")
     String from;
@@ -70,32 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String user_id) {
-        //删除用户的订单
-        String username=userDao.getUserByID(user_id).getUsername();
-        List<String> Order_Ids=orderDao.getAllOrderIDByUser(username);
-        orderBookDao.deleteOrderBook(Order_Ids);
-        orderDao.deleteOrder(Order_Ids);
 
-        //删除地址
-        addressDao.deleteAllAddress(user_id);
-
-        //如果是商家 要注销店铺
-        //获取要注销的店铺信息 此使为未注销状态
-        List<Shop> shopList=shopDao.getShopByUserAndStatus(username,2,1,1);
-        if(!shopList.isEmpty()) {
-            //因为只允许一个未注销的存在  所以未注销的店铺信息存储在shop中
-            Shop shop = shopList.get(0);
-
-            //将所有店铺的书的库存置为-1 无法购买
-//            bookDao.updateStatus(shop.getId());
-            //更改为注销状态 已审核2 通过1 注销2
-            shop.setApply_status(2);
-            shop.setPass_status(1);
-            shop.setExist_status(2);
-            shopDao.updateShop(shop);
-        }
-        uploadImgService.deleteUserImg(user_id);
-        userDao.deleteUser(user_id);
     }
 
     @Override
@@ -197,13 +161,5 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateEmail(String user_id, String email) {
-        User user=userDao.getUserByID(user_id);
-        List<Shop> shopList=shopDao.getShopByUser(user.getUsername());
-        for (Shop shop:shopList)
-        {
-            shop.setUsername(email);
-            shopDao.updateShop(shop);
-        }
-        userDao.updateEmail(user_id,email);
     }
 }

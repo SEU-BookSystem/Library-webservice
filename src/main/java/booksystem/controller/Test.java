@@ -1,22 +1,15 @@
 package booksystem.controller;
 
 import booksystem.dao.BookDao;
-import booksystem.dao.DataDao;
-import booksystem.pojo.AliPay;
-import booksystem.service.PayService;
 import booksystem.service.UploadImgService;
 import booksystem.utils.TokenUtils;
-import com.alipay.api.AlipayApiException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 public class Test {
@@ -24,10 +17,10 @@ public class Test {
     UploadImgService uploadImgService;
     @Autowired
     BookDao bookDao;
-    @Autowired
-    DataDao dataDao;
-    @Resource
-    private PayService payService;//调用支付服务
+//    @Autowired
+//    DataDao dataDao;
+//    @Resource
+//    private PayService payService;//调用支付服务
 
 
 
@@ -54,16 +47,6 @@ public class Test {
     }
 
 
-
-    /*阿里支付*/
-    @RequestMapping(value = "/test/alipay", produces = {"text/html;charset=UTF-8"})
-    public String alipay(@RequestParam("out_trade_no") String out_trade_no,
-                         @RequestParam("subject") String subject,
-                         @RequestParam("total_amount") String total_amount,
-                         @RequestParam("body") String body) throws AlipayApiException {
-
-        return  payService.aliPay(new AliPay(out_trade_no,subject,total_amount,body));
-    }
 
 
     @RequestMapping(value = "/favicon.ico")

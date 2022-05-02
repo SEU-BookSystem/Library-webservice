@@ -124,7 +124,7 @@ public class BorrowServiceImp implements BorrowService {
     //借书
     @Override
     public int borrowBook(int bar_code, String user_id) {
-        //书籍状态为 2.在库
+        //书籍状态为 2.在库 3.预约
         Map<String,Object> book=bookItemDao.getBookItemByBarCode(bar_code);
         if(book.get("status").equals(2)) {
             //用户 借阅数量不超过7本并且现在没有违规记录
@@ -146,6 +146,11 @@ public class BorrowServiceImp implements BorrowService {
             }
             return 0;//超过最大借阅数
         }
+        //被预约 判断预约人是否和借阅人相同
+        if(book.get("status").equals(3))
+        {
+
+        }
         return -1;//书籍不可借
     }
 
@@ -158,7 +163,6 @@ public class BorrowServiceImp implements BorrowService {
         //更新书籍状态为1.在库
         bookItemDao.updateStatus(bar_code, 1);
         return 1;
-
 //        //检查是否借了这本书
 //        Map<String,Object> book=borrowDao.getBorrowByBarCode(bar_code);
 //        if(!book.isEmpty()) {
@@ -176,6 +180,7 @@ public class BorrowServiceImp implements BorrowService {
 //                bookItemDao.updateStatus(bar_code, 1);
 //            }
 //        }
+
 //        return 0;//没有借这本书
 //    }
     }
