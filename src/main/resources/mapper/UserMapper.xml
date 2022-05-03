@@ -14,13 +14,10 @@
         select * from user where username=#{username}
      </select>
 
-    <select id="getUserByID" parameterType="String" resultType="booksystem.pojo.User">
-        select * from user where user_id=#{user_id}
-    </select>
 
     <insert id="addUser">
-        INSERT INTO user(user_id,username,password,name,id_card,age,gender,status,create_time,update_time,access_time)
-        VALUES(MD5(UUID()),#{username},#{password},#{username},#{id_card},#{age},#{gender},0,now(),now(),now());
+        INSERT INTO user(username,password,name,id_card,age,gender,status,create_time,update_time,access_time)
+        VALUES(#{username},#{password},#{username},#{id_card},#{age},#{gender},0,now(),now(),now());
     </insert>
 
     <update id="updateUser"  parameterType="booksystem.pojo.User">
@@ -48,10 +45,6 @@
 
     <update id="accessTime">
         update user set access_time=now() where username=#{username}
-    </update>
-
-    <update id="updateEmail" parameterType="String">
-        update user set username=#{email},email=#{email} where user_id=#{user_id}
     </update>
 
 </mapper>

@@ -2,7 +2,7 @@ package booksystem.pojo;
 
 public class Borrow {
     String lend_id;
-    String user_id;
+    String username;
     String start_time;//借阅开始时间
     String end_time;//借阅结束时间
     int bar_code;//条码号
@@ -16,7 +16,7 @@ public class Borrow {
 
     public Borrow(String lend_id, String user_id, String start_time, String end_time, int bar_code, int is_lend_again, int is_borrow, int status, String update_time) {
         this.lend_id = lend_id;
-        this.user_id = user_id;
+        this.username = user_id;
         this.start_time = start_time;
         this.end_time = end_time;
         this.bar_code = bar_code;
@@ -34,12 +34,12 @@ public class Borrow {
         this.lend_id = lend_id;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getStart_time() {
@@ -102,7 +102,7 @@ public class Borrow {
     public String toString() {
         return "Borrow{" +
                 "lend_id='" + lend_id + '\'' +
-                ", user_id='" + user_id + '\'' +
+                ", username='" + username + '\'' +
                 ", start_time='" + start_time + '\'' +
                 ", end_time='" + end_time + '\'' +
                 ", bar_code=" + bar_code +

@@ -20,9 +20,9 @@ public class BorrowController {
 
     @PostMapping("/book/addReserve")
     public Result addDirectReserve(@RequestParam("reference_num") String reference_num,
-                                   @RequestParam("user_id") String user_id)
+                                   @RequestParam("username") String username)
     {
-        int result=borrowService.addDirectReserve(reference_num,user_id);
+        int result=borrowService.addDirectReserve(reference_num,username);
         if(result==1)
             return Result.ok();
         else if(result==0)
@@ -35,9 +35,9 @@ public class BorrowController {
 
     @PostMapping("/collection/addReserve")
     public Result addCollectionReserve(@RequestParam("reference_nums") List<String> reference_nums,
-                                       @RequestParam("user_id") String user_id)
+                                       @RequestParam("username") String username)
     {
-        int result=borrowService.addCollectionReserve(reference_nums,user_id);
+        int result=borrowService.addCollectionReserve(reference_nums,username);
 
         if(result==1)
             return Result.ok();

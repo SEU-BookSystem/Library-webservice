@@ -14,7 +14,7 @@ public interface UserDao {
     int getAllUserNum();
     //根据用户username获取用户信息
     User getUserByName(String username);
-    User getUserByID(String user_id);
+//    User getUserByID(String user_id);
     //添加一个用户
     void addUser(String username,String password,String id_card,int age,String gender);
     //删除一个用户
@@ -25,9 +25,5 @@ public interface UserDao {
     int updateStatus(String username,int status);
     int updateCode(String username,String activationCode);
     int updateTime(String username);
-    int updateIdentity(String username,int identity);
     int accessTime(String username);
-
-    //更新绑定邮箱
-    void updateEmail(String user_id,String email);
 }

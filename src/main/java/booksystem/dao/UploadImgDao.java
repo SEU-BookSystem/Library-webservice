@@ -14,9 +14,9 @@ public interface UploadImgDao {
     void updateBookImgUrl(String book_id,String url_b,String url_s);
     void updateReturnImgUrl(String order_book_id,String url_b,String url_s);
     HashMap<String,Object> getUserImgUrl(String username);
-    HashMap<String,Object> getShopImgUrl(String username);
-    HashMap<String,Object> getUserImgUrlById(String user_id);
-    HashMap<String,Object> getShopImgUrlById(String shop_id);
-    HashMap<String,Object> getBookImgUrlById(String book_id);
-    HashMap<String,Object> getReturnImgUrlById(String order_book_id);
+//    HashMap<String,Object> getShopImgUrl(String username);
+//    HashMap<String,Object> getUserImgUrlById(String user_id);
+//    HashMap<String,Object> getShopImgUrlById(String shop_id);
+//    HashMap<String,Object> getBookImgUrlById(String book_id);
+//    HashMap<String,Object> getReturnImgUrlById(String order_book_id);
 }

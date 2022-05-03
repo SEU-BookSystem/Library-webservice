@@ -4,20 +4,20 @@
 <mapper namespace="booksystem.dao.BorrowDao">
 
     <insert id="addBorrow" parameterType="booksystem.pojo.Borrow">
-        insert into borrow(lend_id,user_id,start_time,end_time,bar_code,is_lend_again,`status`,is_borrow,update_time)
-        values (MD5(UUID()),#{user_id},#{start_time},#{end_time},#{bar_code},0,#{status},#{is_borrow},now())
+        insert into borrow(lend_id,username,start_time,end_time,bar_code,is_lend_again,`status`,is_borrow,update_time)
+        values (MD5(UUID()),#{username},#{start_time},#{end_time},#{bar_code},0,#{status},#{is_borrow},now())
     </insert>
 
     <select id="getBorrowNumByUser" resultType="int">
-        select COUNT(*) from borrow where `status` in (1,2) and user_id=#{user_id}
+        select COUNT(*) from borrow where `status` in (1,2,4) and username=#{username}
     </select>
 
     <select id="getOvertimeBorrow" resultType="Map">
-        select * from borrow where `status`=2 and user_id=#{user_id}
+        select * from borrow where `status`=2 and username=#{username}
     </select>
 
     <update id="updateStatus" >
-        update borrow set `status`=#{status},update_time=now() where lend_id=#{lend_id}
+        update borrow set is_borrow=#{is_borrow},`status`=#{status},update_time=now() where lend_id=#{lend_id}
     </update>
 
     <select id="getBorrowByBarCode" resultType="Map">

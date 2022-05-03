@@ -1,134 +1,62 @@
 package booksystem.pojo;
 
 public class User {
-    private String id;
-    private String username;
-    private String password;
-    private String email;
-    private int status;//是否激活
-    private String activationCode;//激活码
-    private String name;//昵称
-    private String avatar_b;
-    private String avatar_s;
-    private String create_time;//注册时间
-    private String update_time;//注册时间
-    private int identity;//身份:0.用户 1.商家
-    private String access_time;
-
-    public User(String id, String username, String password, String email, int status, String activationCode, String name, String avatar_b, String avatar_s, String create_time, String update_time, int identity, String access_time) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.status = status;
-        this.activationCode = activationCode;
-        this.name = name;
-        this.avatar_b = avatar_b;
-        this.avatar_s = avatar_s;
-        this.create_time = create_time;
-        this.update_time = update_time;
-        this.identity = identity;
-        this.access_time = access_time;
-    }
+    String username;
+    String password;
+    String name;//昵称
+    String create_time;//注册时间
+    String update_time;//注册时间
+    String access_time;
+    String id_card;
+    int status;
+    int age;
+    String gender;
 
     public User(){}
 
-
-
-    public String getId() {
-        return id;
+    public User(String username, String password, String name, String create_time, String update_time, String access_time, String id_card, int status, int age, String gender) {
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.create_time = create_time;
+        this.update_time = update_time;
+        this.access_time = access_time;
+        this.id_card = id_card;
+        this.status = status;
+        this.age = age;
+        this.gender = gender;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public String getAccess_time() {
-        return access_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public void setAccess_time(String access_time) {
-        this.access_time = access_time;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAvatar_b() {
-        return avatar_b;
-    }
-
-    public String getAvatar_s() {
-        return avatar_s;
-    }
-
-    public int getIdentity() {
-        return identity;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setAvatar_b(String avatar_b) {
-        this.avatar_b = avatar_b;
+    public String getCreate_time() {
+        return create_time;
     }
 
-    public void setAvatar_s(String avatar_s) {
-        this.avatar_s = avatar_s;
-    }
-
-    public void setIdentity(int identity) {
-        this.identity = identity;
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     public String getUpdate_time() {
@@ -139,22 +67,59 @@ public class User {
         this.update_time = update_time;
     }
 
+    public String getAccess_time() {
+        return access_time;
+    }
+
+    public void setAccess_time(String access_time) {
+        this.access_time = access_time;
+    }
+
+    public String getId_card() {
+        return id_card;
+    }
+
+    public void setId_card(String id_card) {
+        this.id_card = id_card;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
-                ", username='" + username + '\'' +
+                "username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", status=" + status +
-                ", activationCode='" + activationCode + '\'' +
                 ", name='" + name + '\'' +
-                ", avatar_b='" + avatar_b + '\'' +
-                ", avatar_s='" + avatar_s + '\'' +
                 ", create_time='" + create_time + '\'' +
                 ", update_time='" + update_time + '\'' +
-                ", identity=" + identity +
                 ", access_time='" + access_time + '\'' +
+                ", id_card='" + id_card + '\'' +
+                ", status=" + status +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
                 '}';
     }
 }

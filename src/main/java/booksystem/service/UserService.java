@@ -10,25 +10,12 @@ public interface UserService {
     int getAllUserNum();
     //根据用户username获取用户信息
     User getUserByName(String username);
-    User getUserByID(String user_id);
     //添加
     void addUser(String username,String password,String id_card,int age,String gender);
 
     //删除用户
-    void deleteUser(String user_id);
+    void deleteUser(String username);
     //更新用户
     int updateUser(String username,String password,String name,int age,String gender);
-    //更新用户激活状态和激活码
-    int updateCode(String username,String activationCode);
-
-    //发送邮件
-    int sendMimeMail( String password,String email,String name);
-    //生成随机激活码
-    String randomCode();
-    //注册用户
-    int register(String password,String email,String name,String activationCode);
-
-    //修改绑定邮箱
-    void updateEmail(String user_id,String email);
 
 }

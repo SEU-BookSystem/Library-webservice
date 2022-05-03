@@ -60,17 +60,17 @@ public class UserController {
         }
     }
 
-    //用户user_id查找用户
-    @RequestMapping("/user/getByID")
-    public Result getUserByID(@RequestParam("user_id") String user_id){
-        User result=userService.getUserByID(user_id);
-        if(result!=null)
-        {
-            return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
-        }else{
-            return Result.error(ResultEnum.User_NOT_EXIST.getCode(),ResultEnum.User_NOT_EXIST.getMsg());
-        }
-    }
+//    //用户user_id查找用户
+//    @RequestMapping("/user/getByID")
+//    public Result getUserByID(@RequestParam("user_id") String user_id){
+//        User result=userService.getUserByID(user_id);
+//        if(result!=null)
+//        {
+//            return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+//        }else{
+//            return Result.error(ResultEnum.User_NOT_EXIST.getCode(),ResultEnum.User_NOT_EXIST.getMsg());
+//        }
+//    }
 
     @PostMapping("/admin/register")
     public Result register(@RequestParam("phone") String phone,
@@ -115,42 +115,5 @@ public class UserController {
         }else{
             return Result.error(ResultEnum.UPDATE_FAIL.getCode(),ResultEnum.UPDATE_FAIL.getMsg());
         }
-    }
-
-    //修改头像
-    @PostMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam("img") MultipartFile img,
-                             ServletRequest request){
-        String token=((HttpServletRequest)request).getHeader("token");
-        String username= TokenUtils.parseToken(token).get("username").toString();
-        if(!img.isEmpty()){
-            uploadImgService.uploadUserImg(img,username);
-            return Result.ok(ResultEnum.SUCCESS.getMsg());
-        }else{
-            return Result.error(ResultEnum.UPDATE_FAIL.getCode(),ResultEnum.UPDATE_FAIL.getMsg());
-        }
-    }
-
-
-    //修改头像
-    @PostMapping("/admin/updateAvatar")
-    public Result updateAvatar(@RequestParam("img") MultipartFile img,
-                               @RequestParam("user_id")String user_id){
-
-        User user=userService.getUserByID(user_id);
-        uploadImgService.uploadUserImg(img,user.getUsername());
-        return Result.ok(ResultEnum.SUCCESS.getMsg());
-    }
-
-    //修改头像
-    @PostMapping("/admin/updateUser")
-    public Result updateEmail(@RequestParam("user_id")  String user_id,
-                              @RequestParam("name") String name,
-                              @RequestParam("password") String password,
-                              @RequestParam("email") String email){
-        User user=userService.getUserByID(user_id);
-        //userService.updateUser(user.getUsername(),password,name);
-        userService.updateEmail(user_id, email);
-        return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 }
