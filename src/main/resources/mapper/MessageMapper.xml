@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.MessageDao">
+    <insert id="addMessage" >
+        insert into message(message_id,username,theme,content,send_time,is_read)
+        values (MD5(UUID()),#{usename},#{theme},#{contene},now(),0)
+    </insert>
+
+    <update id="readAllMessage" >
+        update message set is_read=1 where username=#{username}
+    </update>
+
+    <update id="readMessage">
+        update message set is_read=1 where message_id=#{message_id}
+    </update>
+
+    <delete id="deleteAllMessage">
+        delete from message where username=#{username}
+    </delete>
+
+    <delete id="deleteMessage">
+        delete from message where message_id={message_id}
+    </delete>
+
+    <select id="nonReadMessage" resultType="int">
+        select count(*) from message where username=#{username} and is_read=0
+    </select>
+</mapper>

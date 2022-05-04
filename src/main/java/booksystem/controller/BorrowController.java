@@ -26,7 +26,7 @@ public class BorrowController {
         if(result==1)
             return Result.ok();
         else if(result==0)
-            return Result.error(ResultEnum.RESERVE_IS_NOT_ENOUGH.getCode(), ResultEnum.RESERVE_IS_NOT_ENOUGH.getMsg());
+            return Result.error(ResultEnum.BOOK_IS_NOT_ENOUGH.getCode(), ResultEnum.BOOK_IS_NOT_ENOUGH.getMsg());
         else if(result==-1)
             return Result.error(ResultEnum.BORROW_IS_MAX.getCode(),ResultEnum.BORROW_IS_MAX.getMsg());
         else
@@ -58,6 +58,45 @@ public class BorrowController {
     public Result batCancelReserve(@RequestParam("lend_ids") List<String> lend_ids)
     {
         borrowService.batCancelReserve(lend_ids);
+        return Result.ok();
+    }
+
+    //借书
+    @PostMapping("/admin/borrowBook")
+    public Result borrowBook(@RequestParam("bar_code") int bar_code,
+                             @RequestParam("username") String username)
+    {
+        int result=borrowService.borrowBook(bar_code,username);
+        if(result==2) {
+            //成功
+            return Result.ok();
+        }else if(result==1) {
+            //有逾期记录 不能借书
+            return Result.error(ResultEnum.OVERTIME_RECODE.getCode(), ResultEnum.OVERTIME_RECODE.getMsg());
+        }else if(result==0) {
+            //超过最大借阅数
+            return Result.error(ResultEnum.BORROW_IS_MAX.getCode(),ResultEnum.BORROW_IS_MAX.getMsg());
+        }else if(result==-1) {
+            //书籍不可借
+            return Result.error(ResultEnum.BOOK_IS_NOT_ENOUGH.getCode(),ResultEnum.BORROW_IS_MAX.getMsg());
+        }
+        return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
+    }
+
+    //还书
+    @PostMapping("/admin/lendBook")
+
+    public Result lendBook(@RequestParam("bar_code") int bar_code,
+                           @RequestParam("username") String username)
+    {
+        borrowService.lendBook(bar_code,username);
+        return Result.ok();
+    }
+
+    //续借
+    @PostMapping("/renew")
+    public Result renew(@RequestParam("bar_code") int bar_code)
+    {
         return Result.ok();
     }
 }

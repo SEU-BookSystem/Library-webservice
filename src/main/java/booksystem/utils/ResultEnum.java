@@ -28,8 +28,9 @@ public enum ResultEnum {
     NUM_LOWER_ZERO(22,"数据为负"),
     APPLY_OUT_TIME(23,"已超时过期，无法申请"),
     RATE_NUM_NOT_ENOUGH(24,"评分数量过少，无法计算评分"),
-    RESERVE_IS_NOT_ENOUGH(25,"书籍可预约数量不足"),
-    BORROW_IS_MAX(26,"借阅数量已达最大值")
+    BOOK_IS_NOT_ENOUGH(25,"书籍可被预约、可被借阅数量不足"),
+    BORROW_IS_MAX(26,"借阅数量已达最大值"),
+    OVERTIME_RECODE(27,"有逾期记录"),
 
 
     ;

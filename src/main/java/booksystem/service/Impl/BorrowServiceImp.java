@@ -173,6 +173,4 @@ public class BorrowServiceImp implements BorrowService {
         bookItemDao.updateStatus(bar_code, 1);
         return 1;
     }
-
-
 }
