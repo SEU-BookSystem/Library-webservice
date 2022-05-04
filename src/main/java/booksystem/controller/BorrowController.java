@@ -94,9 +94,11 @@ public class BorrowController {
     }
 
     //续借
-    @PostMapping("/renew")
-    public Result renew(@RequestParam("bar_code") int bar_code)
+    @PostMapping("/renewBook")
+    public Result renew(@RequestParam("bar_code") int bar_code,
+                        @RequestParam("username") String username)
     {
+        borrowService.renew(bar_code,username);
         return Result.ok();
     }
 }

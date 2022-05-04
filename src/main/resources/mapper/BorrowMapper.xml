@@ -25,9 +25,13 @@
     </select>
 
     <update id="renew">
-        update borrow set is_lend_again=1,update_time=now(),end_time=#{end_time}
+        update borrow set is_lend_again=1,update_time=now(),end_time=DATE_ADD(end_time,interval 7 day)
         where bar_code=#{bar_code} and `status`=1
     </update>
+
+    <delete id="deleteBorrow">
+        delete from borrow where lend_id=#{lend_id}
+    </delete>
 
 
 </mapper>

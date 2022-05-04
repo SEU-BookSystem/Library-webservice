@@ -22,5 +22,8 @@ public interface BorrowDao {
 
     //更新状态
     void updateStatus(String lend_id,int status,int is_borrow);
-    void renew(int bar_code,String end_time);
+    void renew(int bar_code);
+
+    //删除借阅信息
+    void deleteBorrow(String lend_id);
 }

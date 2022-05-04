@@ -1,8 +1,11 @@
 package booksystem.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface BorrowService {
+    //计算时间
+    String[] countTime(int num);
 
     //预约   用户、管理员都能操作
     //取消预约
@@ -23,5 +26,12 @@ public interface BorrowService {
     int borrowBook(int bar_code,String username);
     //还书
     int lendBook(int bar_code,String username);
+
+    //编辑借阅记录
+    void updateBorrow();
+    //删除借阅记录
+    void deleteBorrow(String lend_id);
+    //添加借阅记录
+
 
 }
