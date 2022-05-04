@@ -25,12 +25,13 @@ public interface BookDao {
     Map<String,Object> getBookByReferenceNum(String reference_num);
 
     //获取多少天以来被借阅过的图书
-    Map<String,Object> getBorrowBook(int day);
+    List<Map<String,Object>> getBorrowBook(int day);
 
     //添加一种书
     void addBook(Book book);
     //删除
     void deleteBook(String isbn);
+    void deleteBookByReferenceNum(String reference_num);
     void deleteBooks(List<String> isbns);
     //更新图书信息
     void updateBook(Book book);
@@ -43,6 +44,7 @@ public interface BookDao {
 
     //分页和模糊查询
     List<Map<String,Object>> getPage(int start, int book_num, int style, String main_id, String second_id, String year,String year_before,String year_after,String shop_id);
+    List<Map<String,Object>> getPageByYear(int start, int book_num, String year_before,String year_after);
     List<Map<String,Object>> fuzzyQuery(int start, int book_num, int style, int queryWhat, String content);
 
     int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);

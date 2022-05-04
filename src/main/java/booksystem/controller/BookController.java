@@ -35,21 +35,34 @@ public class BookController {
         return Result.ok().put("data",bookService.getAllBook());
     }
 
+    @RequestMapping("/book/getBookByReferenceNum")
+    public Result getAllBook(@RequestParam("reference_num") String reference_num)
+    {
+        Map<String,Object>map=bookDao.getBookByReferenceNum(reference_num);
+        if(map!=null){
+            map.put("update_time",map.get("update_time").toString()
+                    .replace('T',' '));
+            return Result.ok().put("data",map);
+        }else
+            return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
+
+    }
+
 
     //单本删除
     @DeleteMapping("/admin/book/delete")
-    public Result deleteBook(@RequestParam("isbn") String isbn) {
-        if(isbn.isEmpty()) {
+    public Result deleteBook(@RequestParam("reference_num") String reference_num) {
+        if(reference_num.isEmpty()) {
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(), ResultEnum.DATA_IS_NULL.getMsg());
         }
-        bookService.deleteBook(isbn);
+        bookDao.deleteBookByReferenceNum(reference_num);
         return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 
     //批量删除
     @DeleteMapping("/admin/book/multiDelete")
-    public Result multiDeleteBook(@RequestParam("isbns") List<String> isbns) {
-        if(isbns.isEmpty()){
+    public Result multiDeleteBook(@RequestParam("reference_nums") List<String> reference_nums) {
+        if(reference_nums.isEmpty()){
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
         }
 //        bookDao.deleteBooks(isbns);
@@ -90,13 +103,60 @@ public class BookController {
     @RequestMapping("/book/getMaxBook")
     public Result getMaxBook(ServletRequest request)
     {
-//        String token=((HttpServletRequest)request).getHeader("token");
-        String map=bookService.getMaxBook();
-        if(map!=null)
-        return Result.ok().put("data",map);
+        List<Map<String,Object>> map=bookDao.getBorrowBook(Integer.MAX_VALUE);
+
+        if(map!=null){
+            Map<String,Object>map1=bookDao.getBookByReferenceNum(map.get(0).get("reference_num").toString());
+            map1.put("update_time",map1.get("update_time").toString()
+                    .replace('T',' '));
+            return Result.ok().put("data",map1);
+        }
         else
             return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
     }
+
+    /**
+     * @param page_num 第几页
+     * @param book_num 每页多少书
+     * @return
+     */
+    @RequestMapping("/book/getPageByYear")
+    public Result getPageByYear(@RequestParam("page_num")String page_num,
+                          @RequestParam("book_num")String book_num,
+                          @RequestParam("year_before") String year_before,
+                          @RequestParam("year_after") String year_after
+                          ) {
+        if(page_num.isEmpty()||book_num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=bookDao.getPageByYear(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),year_before,year_after
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
+//    @RequestMapping("/book/getPageByCategory")
+//    public Result getPageByCategory(@RequestParam("page_num")String page_num,
+//                          @RequestParam("book_num")String book_num,
+//                          @RequestParam("year_before") String year_before,
+//                          @RequestParam("year_after") String year_after
+//    ) {
+//        if(page_num.isEmpty()||book_num.isEmpty()){
+//            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+//        }
+//        List<Map<String,Object>> result=bookDao.getPageByYear(
+//                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),year_before,year_after
+//        );
+//        for(int i=0;i<result.size();i++){
+//            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+//                    .replace('T',' '));
+//        }
+//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+//    }
 
 
 //    @PostMapping("/spider")
