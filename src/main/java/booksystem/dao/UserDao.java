@@ -5,12 +5,13 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Mapper
 public interface UserDao {
     //获取所有用户
-    List<User> getAllUser();
+    List<Map<String,Object>> getAllUser();
     int getAllUserNum();
     //根据用户username获取用户信息
     User getUserByName(String username);

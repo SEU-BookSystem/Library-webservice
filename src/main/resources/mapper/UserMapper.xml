@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="booksystem.dao.UserDao">
-    <select id="getAllUser" resultType="booksystem.pojo.User">
+    <select id="getAllUser" resultType="java.util.HashMap">
         select * from user
     </select>
 

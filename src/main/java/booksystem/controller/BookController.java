@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins="*",maxAge = 3600)
 @RestController
@@ -81,6 +82,23 @@ public class BookController {
         return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
     }
 
+    /**
+     *
+     * @param request
+     * @return 返回本周借阅最高的图书
+     */
+    @RequestMapping("/book/getMaxBook")
+    public Result getMaxBook(ServletRequest request)
+    {
+//        String token=((HttpServletRequest)request).getHeader("token");
+        String map=bookService.getMaxBook();
+        if(map!=null)
+        return Result.ok().put("data",map);
+        else
+            return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
+    }
+
+
 //    @PostMapping("/spider")
 //    public Result test(@RequestParam("id") int id,
 //                       @RequestParam("count") int count,
@@ -100,8 +118,7 @@ public class BookController {
 //     * @param page_num 第几页
 //     * @param book_num 每页多少书
 //     * @param style 排序方式 1:总销量,2:上架时间(所有),
-//     * @param main_category_id 一级目录id
-//     * @param second_category_id 二级目录id
+//     * @param category_id 一级目录id
 //     * @param year 年份筛选
 //     * @return
 //     */
@@ -109,19 +126,17 @@ public class BookController {
 //    public Result getPage(@RequestParam("page_num")String page_num,
 //                          @RequestParam("book_num")String book_num,
 //                          @RequestParam("style")String style,
-//                          @RequestParam("main_category_id") String main_category_id,//可缺省
-//                          @RequestParam("second_category_id") String second_category_id,//可缺省
+//                          @RequestParam("main_category_id") String category_id,//可缺省
 //                          @RequestParam("year") String year,   //可缺省
 //                          @RequestParam("year_before") String year_before,   //可缺省
 //                          @RequestParam("year_after") String year_after,   //可缺省
-//                          @RequestParam("shop_id") String shop_id   //可缺省
 //                          ) {
 //        if(page_num.isEmpty()||book_num.isEmpty()||style.isEmpty()){
 //            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
 //        }
 //        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",bookService.getPage(
 //                Integer.parseInt(page_num),Integer.parseInt(book_num),Integer.parseInt(style),
-//                main_category_id,second_category_id,year,year_before,year_after,shop_id
+//                category_id,year,year_before,year_after
 //        ));
 //    }
 //

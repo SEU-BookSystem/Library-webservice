@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -27,7 +28,16 @@ public class UserController {
     //获取所有用户
     @RequestMapping("/admin/getAllUser")
     public Result getAllUser(){
-        List<User> result=userService.getAllUser();
+        List<Map<String,Object>> result=userDao.getAllUser();
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("access_time",result.get(i).get("access_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("create_time",result.get(i).get("create_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+
         if(!result.isEmpty())
         {
             return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);

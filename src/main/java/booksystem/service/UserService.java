@@ -3,10 +3,11 @@ package booksystem.service;
 import booksystem.pojo.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     //获取所有用户
-    List<User> getAllUser();
+    List<Map<String,Object>> getAllUser();
     int getAllUserNum();
     //根据用户username获取用户信息
     User getUserByName(String username);

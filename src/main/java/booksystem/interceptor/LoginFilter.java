@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 public class LoginFilter implements Filter{
     final String[] allowUrl={
-            "login","registerUser","test","category","favicon.ico","alipay"
+            "login","registerUser","test","category","favicon.ico","alipay","book"
     };
     @Autowired
     UserDao userDao;

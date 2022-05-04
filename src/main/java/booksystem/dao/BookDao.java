@@ -24,6 +24,8 @@ public interface BookDao {
     //根据reference_num查找图书
     Map<String,Object> getBookByReferenceNum(String reference_num);
 
+    //获取多少天以来被借阅过的图书
+    Map<String,Object> getBorrowBook(int day);
 
     //添加一种书
     void addBook(Book book);
