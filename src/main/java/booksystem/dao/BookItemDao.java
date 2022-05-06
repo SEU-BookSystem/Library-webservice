@@ -27,4 +27,7 @@ public interface BookItemDao {
     Map<String,Object> getBookItemByBarCode(int bar_code);
     //根据reference_num查询某一种类的所有图书
     List< Map<String,Object>> getBookItemByReferenceNum(String Reference_num);
+
+    //返回不同状态下书籍的数量
+    int getBookItemNumByStatus(int status);
 }

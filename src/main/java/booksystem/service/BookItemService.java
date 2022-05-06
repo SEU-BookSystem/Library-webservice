@@ -21,4 +21,10 @@ public interface BookItemService {
     //根据bar_code批量删除
     void deleteBookItems(List<Integer> bar_codes);
 
+    //返回不同状态下的图书数量
+    int getBookNumByStatus(int status);
+
+    //批量图书上架
+    void bookShelf(List<Integer> bar_codes);
+
 }

@@ -76,4 +76,8 @@
             #{bar_code}
         </foreach>
     </delete>
+
+    <select id="getBookItemNumByStatus" resultType="int">
+        select count(*) from bookitem where status=#{status}
+    </select>
 </mapper>

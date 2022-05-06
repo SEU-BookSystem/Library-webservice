@@ -53,6 +53,11 @@ public interface BookDao {
     int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);
     int fuzzyQueryCount(int queryWhat, String content);
 
+    //更新书籍数量
+    void updateBookNum(String reference_num,int num);
+
     //有关联错误待删
 //    void updateStatus(String shop_id);
+
+
 }

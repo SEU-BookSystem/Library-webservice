@@ -1,5 +1,6 @@
 package booksystem.service.Impl;
 
+import booksystem.dao.BookDao;
 import booksystem.dao.BookItemDao;
 import booksystem.pojo.BookItem;
 import booksystem.service.BookItemService;
@@ -14,6 +15,8 @@ import java.util.Map;
 public class BookItemServiceImp implements BookItemService {
     @Autowired
     BookItemDao bookItemDao;
+    @Autowired
+    BookDao bookDao;
 
     @Override
     public int addBookItem(int num, String reference_num) {
@@ -50,11 +53,35 @@ public class BookItemServiceImp implements BookItemService {
         if(bookItemDao.getBookItemByBarCode(bar_code)==null)
             return 0;
         bookItemDao.deleteBookItem(bar_code);
+        Map<String,Object> bookitem=bookItemDao.getBookItemByBarCode(bar_code);
+        bookDao.updateBookNum(bookitem.get("reference_num").toString(),1);
         return 1;
     }
 
     @Override
     public void deleteBookItems(List<Integer> bar_codes) {
         bookItemDao.deleteBookItems(bar_codes);
+        Map<String,Object> bookitem=bookItemDao.getBookItemByBarCode(bar_codes.get(0));
+        bookDao.updateBookNum(bookitem.get("reference_num").toString(),bar_codes.size());
     }
+
+    @Override
+    public int getBookNumByStatus(int status) {
+        return bookItemDao.getBookItemNumByStatus(status);
+    }
+
+    @Override
+    public void bookShelf(List<Integer> bar_codes) {
+        for (int bar_code:bar_codes){
+            Map<String,Object>bookitem=bookItemDao.getBookItemByBarCode(bar_code);
+            if(bookitem!=null) {
+                //将1.在库 更改为2.可借
+                if (bookitem.get("status").equals(1)) {
+                    bookItemDao.updateStatus(bar_code, 2);
+                }
+            }
+        }
+    }
+
+
 }

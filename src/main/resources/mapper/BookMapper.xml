@@ -90,6 +90,10 @@
         </foreach>
     </delete>
 
+    <update id="updateBookNum">
+        update book set num=(num-#{num}) where reference_num=#{reference_num}
+    </update>
+
 
     <select id="getPageByYear" resultType="java.util.HashMap">
         SELECT * (select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,

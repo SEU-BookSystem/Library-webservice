@@ -48,4 +48,17 @@ public class BookItemController {
         bookItemService.deleteBookItems(bar_codes);
         return Result.ok();
     }
+
+    @RequestMapping("/admin/getBookNumByStatus")
+    public Result getBookNumByStatus(@RequestParam("status") int status)
+    {
+        return Result.ok().put("data",bookItemService.getBookNumByStatus(status));
+    }
+
+    @PostMapping("/admin/bookShelf")
+    public Result bookShelf(@RequestParam("bar_codes") List<Integer> bar_codes)
+    {
+        bookItemService.bookShelf(bar_codes);
+        return Result.ok();
+    }
 }
