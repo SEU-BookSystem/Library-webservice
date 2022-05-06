@@ -116,6 +116,29 @@ public class BookController {
     }
 
     /**
+     *
+     * @param num 最热多少本
+     * @param category 种类：0：图书，1：期刊
+     * @return
+     */
+    @RequestMapping("/book/getHotBook")
+    public Result getHotBook(@RequestParam("num")String num,
+                             @RequestParam("category")String category)
+    {
+        List<Map<String,Object>> map=bookDao.getHotBook(Integer.parseInt(num),Integer.parseInt(category));
+
+        if(map!=null){
+            for(int i=0;i<map.size();i++){
+                map.get(i).put("update_time",map.get(i).get("update_time").toString()
+                        .replace('T',' '));
+            }
+            return Result.ok().put("data",map);
+        }
+        else
+            return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(), ResultEnum.UNKNOWN_ERROR.getMsg());
+    }
+
+    /**
      * @param page_num 第几页
      * @param book_num 每页多少书
      * @return
@@ -139,24 +162,46 @@ public class BookController {
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
     }
 
-//    @RequestMapping("/book/getPageByCategory")
-//    public Result getPageByCategory(@RequestParam("page_num")String page_num,
-//                          @RequestParam("book_num")String book_num,
-//                          @RequestParam("year_before") String year_before,
-//                          @RequestParam("year_after") String year_after
-//    ) {
-//        if(page_num.isEmpty()||book_num.isEmpty()){
-//            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-//        }
-//        List<Map<String,Object>> result=bookDao.getPageByYear(
-//                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),year_before,year_after
-//        );
-//        for(int i=0;i<result.size();i++){
-//            result.get(i).put("update_time",result.get(i).get("update_time").toString()
-//                    .replace('T',' '));
-//        }
-//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
-//    }
+    /**
+     *
+     * @param page_num 第几页
+     * @param book_num 每页多少书
+     * @param category 种类：0：社科，1：文学，2：自然科学，3，其他
+     * @return
+     */
+    @RequestMapping("/book/getMainPage")
+    public Result getPageByCategory(@RequestParam("page_num")String page_num,
+                          @RequestParam("book_num")String book_num,
+                          @RequestParam("category") String category
+    ) {
+        if(page_num.isEmpty()||book_num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=bookDao.getMainPage(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),Integer.parseInt(category)
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
+    @RequestMapping("/book/getNewBook")
+    public Result getNewBook(@RequestParam("num") String num) {
+        if(num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=bookDao.getNewBook(
+                Integer.parseInt(num)
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
 
 
 //    @PostMapping("/spider")
@@ -223,29 +268,32 @@ public class BookController {
 //        ));
 //    }
 //
-//    /**
-//     * @param page_num 第几页
-//     * @param book_num 每页多少书
-//     * @param style 排序方式 1:总销量,2:上架时间(所有),
-//     * @param queryWhat 查询: 1:按书名模糊查询,2:按作者模糊查询,3:按出版社模糊查询,4:按内容详情模糊查询
-//     * @param content 查询内容
-//     * @return
-//     */
-//    @RequestMapping("/book/fuzzyQuery")
-//    public Result fuzzyQuery(@RequestParam("page_num")String page_num,
-//                          @RequestParam("book_num")String book_num,
-//                          @RequestParam("style")String style,
-//                          @RequestParam("queryWhat") String queryWhat,//可缺省
-//                          @RequestParam("content") String content//可缺省
-//    ) {
-//        if(page_num.isEmpty()||book_num.isEmpty()||style.isEmpty()||queryWhat.isEmpty()){
-//            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-//        }
-//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",bookService.fuzzyQuery(
-//                Integer.parseInt(page_num),Integer.parseInt(book_num),Integer.parseInt(style),
-//                Integer.parseInt(queryWhat),"%"+content+"%"
-//        ));
-//    }
+    /**
+     * @param page_num 第几页
+     * @param book_num 每页多少书
+     * @param queryWhat 查询: 1:按书名模糊查询,2:按作者模糊查询,3:按出版社模糊查询,4:按内容详情模糊查询
+     * @param content 查询内容
+     * @return
+     */
+    @RequestMapping("/book/fuzzyQuery")
+    public Result fuzzyQuery(@RequestParam("page_num")String page_num,
+                          @RequestParam("book_num")String book_num,
+                          @RequestParam("queryWhat") String queryWhat,//可缺省
+                          @RequestParam("content") String content//可缺省
+    ) {
+        if(page_num.isEmpty()||book_num.isEmpty()||queryWhat.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=bookDao.fuzzyQuery(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),
+                Integer.parseInt(queryWhat),"%"+content+"%"
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
 //
 //
 //    @RequestMapping("/book/fuzzyQueryCount")
