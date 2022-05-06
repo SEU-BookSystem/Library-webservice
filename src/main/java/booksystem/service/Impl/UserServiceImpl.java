@@ -49,8 +49,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(String username,String password,String id_card,int age,String gender) {
-        userDao.addUser(username,password,id_card,age,gender);
+    public void addUser(String username,String password,String id_card,int age,String gender,String name) {
+        userDao.addUser(username,password,id_card,age,gender,name);
     }
 
     @Override

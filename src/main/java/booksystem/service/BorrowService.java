@@ -27,11 +27,11 @@ public interface BorrowService {
     //还书
     int lendBook(int bar_code,String username);
 
-    //编辑借阅记录
-    void updateBorrow();
     //删除借阅记录
     void deleteBorrow(String lend_id);
-    //添加借阅记录
 
-
+    //管理员设置书籍逾期
+    int setBookOvertime(String username,String lend_id);
+    //管理员处理逾期
+    int handleBookOvertime(String username, String lend_id);
 }

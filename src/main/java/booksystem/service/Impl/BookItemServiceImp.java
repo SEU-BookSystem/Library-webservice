@@ -21,7 +21,7 @@ public class BookItemServiceImp implements BookItemService {
         {
             for(int i=0;i<num;i++) {
                 //默认为在库状态
-                BookItem bookItem = new BookItem(0, reference_num, 0, "我爱读书一号馆");
+                BookItem bookItem = new BookItem(0, reference_num, 1, "我爱读书一号馆");
                 bookItemDao.addBookItem(bookItem);
             }
             return 1;

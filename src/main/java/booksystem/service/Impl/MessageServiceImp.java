@@ -52,7 +52,7 @@ public class MessageServiceImp implements MessageService {
 
     @Override
     public int nonReadMessage(String username) {
-        messageDao.nonReadMessage(username);
-        return 0;
+
+        return messageDao.nonReadMessage(username);
     }
 }

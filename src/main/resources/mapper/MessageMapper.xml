@@ -4,7 +4,7 @@
 <mapper namespace="booksystem.dao.MessageDao">
     <insert id="addMessage" >
         insert into message(message_id,username,theme,content,send_time,is_read)
-        values (MD5(UUID()),#{usename},#{theme},#{contene},now(),0)
+        values (MD5(UUID()),#{username},#{theme},#{content},now(),0)
     </insert>
 
     <update id="readAllMessage" >
@@ -20,7 +20,7 @@
     </delete>
 
     <delete id="deleteMessage">
-        delete from message where message_id={message_id}
+        delete from message where message_id=#{message_id}
     </delete>
 
     <select id="nonReadMessage" resultType="int">

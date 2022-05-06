@@ -87,7 +87,8 @@ public class UserController {
                            @RequestParam("password") String password,
                            @RequestParam("gender") String gender,
                            @RequestParam("age") String age,
-                           @RequestParam("id_card") String id_card) {
+                           @RequestParam("id_card") String id_card,
+                           @RequestParam("name") String name) {
 
         if(phone.isEmpty()||password.isEmpty()||id_card.isEmpty()||age.isEmpty()||gender.isEmpty()){
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
@@ -97,7 +98,7 @@ public class UserController {
             if(user!=null){
                 return Result.error(23,"已有该用户无法重复添加");
             }
-            userService.addUser(phone, password,id_card, Integer.parseInt(age),gender);
+            userService.addUser(phone, password,id_card, Integer.parseInt(age),gender,name);
             return Result.ok(ResultEnum.SUCCESS.getMsg());
         }
     }

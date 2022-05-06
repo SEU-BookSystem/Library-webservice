@@ -3,6 +3,7 @@ package booksystem.service.Impl;
 import booksystem.dao.BookItemDao;
 import booksystem.dao.BorrowDao;
 import booksystem.dao.MessageDao;
+import booksystem.dao.UserDao;
 import booksystem.pojo.Borrow;
 import booksystem.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,20 @@ public class BorrowServiceImp implements BorrowService {
     BookItemDao bookItemDao;
     @Autowired
     MessageDao messageDao;
+    @Autowired
+    UserDao userDao;
 
     @Override
     public String[] countTime(int num){
         Date currdate=new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String startTime=format.format(currdate).toString();
         Calendar ca = Calendar.getInstance();
         ca.setTime(currdate);
         ca.add(Calendar.DATE, num);
         currdate = ca.getTime();
         String enddate = format.format(currdate);
-        return new String[]{format.format(currdate),enddate};
+        return new String[]{startTime,enddate};
     }
 
     @Override
@@ -63,9 +67,9 @@ public class BorrowServiceImp implements BorrowService {
                 int bar_code=0;
                 for (Map<String, Object> book : books) {
 
-                    //查找bookitem status为1.在馆的书籍
+                    //查找bookitem status为2.可借的书籍
                     //预约成功
-                    if (book.get("status").equals(1)) {
+                    if (book.get("status").equals(2)) {
                         //生成预约记录信息 状态为4.预约成功
                         bar_code=Integer.parseInt(book.get("bar_code").toString());
                         flag=true;
@@ -114,8 +118,8 @@ public class BorrowServiceImp implements BorrowService {
             List<Map<String, Object>> books = bookItemDao.getBookItemByReferenceNum(reference_num);
 
             for (Map<String, Object> book : books) {
-                //查找bookitem status为1.在馆的书籍
-                if (book.get("status").equals(1)) {
+                //查找bookitem status为2.可借的书籍
+                if (book.get("status").equals(2)) {
                     //生成预约记录信息
                     String str[]=countTime(1);
                     Borrow borrow=new Borrow(null,username,str[0],str[1],
@@ -159,7 +163,8 @@ public class BorrowServiceImp implements BorrowService {
     public int borrowBook(int bar_code, String username) {
         //书籍状态为 2.在库 3.预约
         Map<String,Object> book=bookItemDao.getBookItemByBarCode(bar_code);
-        Map<String,Object> overtime=borrowDao.getOvertimeBorrow(username);
+        //获取用户所有逾期的记录
+        List<Map<String,Object>> overtime=borrowDao.getOvertimeBorrow(username);
 
         if(book.get("status").equals(2)) {
             //用户 借阅数量不超过7本并且现在没有违规记录
@@ -167,9 +172,10 @@ public class BorrowServiceImp implements BorrowService {
             //借阅数量小于7本
             if(sum<7) {
                 //没有逾期记录
-                if(overtime.isEmpty()) {
+                if(overtime==null) {
                     //生成借书信息，状态为1.借阅未逾期
                     String str[]=countTime(14);
+
                     Borrow borrow=new Borrow(null,username,str[0],str[1],bar_code,
                             0,1,1,null);
                     borrowDao.addBorrow(borrow);
@@ -184,23 +190,27 @@ public class BorrowServiceImp implements BorrowService {
             return 0;//超过最大借阅数
         }
         //被预约 判断预约人是否和借阅人相同
-        if(book.get("status").equals(3)&&username==book.get("username"))
+        if(book.get("status").equals(4))
         {
-            //没有违约记录
-            if(overtime.isEmpty())
-            {
-                //将预约信息转变为借阅信息  将is_borrow=1 status=1
-                String str[]=countTime(14);
-                borrowDao.deleteBorrow(book.get("lend_id").toString());
-                Borrow borrow=new Borrow(null,username,str[0],str[1],bar_code,
-                        1,1,1,null);
-                //修改书籍状态为3.已借
-                bookItemDao.updateStatus(bar_code,3);
-                messageDao.addMessage(username,"借阅通知",
-                        "尊敬的会员,您已成功借阅该书籍，注意还书时间，请在期限内按时归还。");
-                return 2;
+            Map<String,Object> temp=borrowDao.getReserveByBarCode(bar_code);
+            if(username.equals(temp.get("username").toString())) {
+                //没有违约记录
+                if (overtime==null) {
+                    //将预约信息转变为借阅信息  将is_borrow=1 status=1
+                    String str[] = countTime(14);
+                    borrowDao.deleteBorrow(temp.get("lend_id").toString());
+                    Borrow borrow = new Borrow(null, username, str[0], str[1], bar_code,
+                            1, 1, 1, null);
+                    borrowDao.addBorrow(borrow);
+                    //修改书籍状态为3.已借
+                    bookItemDao.updateStatus(bar_code, 3);
+                    messageDao.addMessage(username, "借阅通知",
+                            "尊敬的会员,您已成功借阅该书籍，注意还书时间，请在期限内按时归还。");
+                    return 2;
+                }
+                return 1;
             }
-            return 1;
+            return -1;
         }
         return -1;//书籍不可借
     }
@@ -209,22 +219,41 @@ public class BorrowServiceImp implements BorrowService {
     @Override
     public int lendBook(int bar_code, String username){
         Map<String,Object> book=borrowDao.getBorrowByBarCode(bar_code);
-        //将借阅状态更改为3.已还
-        borrowDao.updateStatus(book.get("lend_id").toString(), 3,1);
-        //更新书籍状态为1.在库
-        bookItemDao.updateStatus(bar_code, 1);
-        messageDao.addMessage(username,"借阅通知",
-                "尊敬的会员,您已成功还书，感谢您的配合。");
-        return 1;
-    }
-
-    @Override
-    public void updateBorrow() {
-
+        if(book!=null) {
+            //将借阅状态更改为3.已还
+            borrowDao.updateStatus(book.get("lend_id").toString(), 3, 1);
+            //更新书籍状态为1.在库
+            bookItemDao.updateStatus(bar_code, 1);
+            messageDao.addMessage(username, "借阅通知",
+                    "尊敬的会员,您已成功还书，感谢您的配合。");
+            return 1;
+        }
+        return 0;
     }
 
     @Override
     public void deleteBorrow(String lend_id) {
+        borrowDao.deleteBorrow(lend_id);
+    }
 
+    @Override
+    public int setBookOvertime(String username, String lend_id) {
+        //将书籍状态从1.借阅未逾期 更改为2.逾期
+        borrowDao.updateStatus(lend_id,2,1);
+        //将用户状态从0.正常设置为1.违约
+        userDao.updateStatus(username,1);
+        //发送逾期提醒
+        messageDao.addMessage(username,"借阅通知",
+                "尊敬的会员,您借阅的书籍已逾期，请尽早归还，谢谢您的配合。");
+        return 0;
+    }
+
+    @Override
+    public int handleBookOvertime(String username, String lend_id) {
+        List<Map<String,Object>> overtime=borrowDao.getOvertimeBorrow(username);
+        if(overtime.size()==1) {
+            userDao.updateStatus(username,0);
+        }
+        return 0;
     }
 }

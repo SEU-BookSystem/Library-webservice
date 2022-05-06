@@ -17,7 +17,7 @@ public interface UserDao {
     User getUserByName(String username);
 //    User getUserByID(String user_id);
     //添加一个用户
-    void addUser(String username,String password,String id_card,int age,String gender);
+    void addUser(String username,String password,String id_card,int age,String gender,String name);
     //删除一个用户
     void deleteUser(String username);
     //更新用户信息

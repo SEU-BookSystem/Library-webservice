@@ -78,7 +78,7 @@ public class BorrowController {
             return Result.error(ResultEnum.BORROW_IS_MAX.getCode(),ResultEnum.BORROW_IS_MAX.getMsg());
         }else if(result==-1) {
             //书籍不可借
-            return Result.error(ResultEnum.BOOK_IS_NOT_ENOUGH.getCode(),ResultEnum.BORROW_IS_MAX.getMsg());
+            return Result.error(ResultEnum.BOOK_IS_NOT_ENOUGH.getCode(),ResultEnum.BOOK_IS_NOT_ENOUGH.getMsg());
         }
         return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
     }
@@ -89,8 +89,13 @@ public class BorrowController {
     public Result lendBook(@RequestParam("bar_code") int bar_code,
                            @RequestParam("username") String username)
     {
-        borrowService.lendBook(bar_code,username);
-        return Result.ok();
+        int result=borrowService.lendBook(bar_code,username);
+        if(result==1) {
+            return Result.ok();
+        }else if(result==0) {
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(), ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
     }
 
     //续借
@@ -98,7 +103,38 @@ public class BorrowController {
     public Result renew(@RequestParam("bar_code") int bar_code,
                         @RequestParam("username") String username)
     {
-        borrowService.renew(bar_code,username);
+        int result=borrowService.renew(bar_code,username);
+        if(result==1) {
+            return Result.ok();
+        }else if(result==0){
+            return Result.error(ResultEnum.OVERTIME_RECODE.getCode(), ResultEnum.OVERTIME_RECODE.getMsg());
+        }else if(result==-1){
+            return Result.error(ResultEnum.RENEW_REPEAT.getCode(),ResultEnum.RENEW_REPEAT.getMsg());
+        }
+        return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
+    }
+
+    //删除借阅记录
+    @DeleteMapping("/admin/deleteBorrow")
+    public Result deleteBorrow(@RequestParam("lend_id") String lend_id)
+    {
+        borrowService.deleteBorrow(lend_id);
+        return Result.ok();
+    }
+
+    @PostMapping("/admin/setBorrowOvertime")
+    public Result setBookOvertime(@RequestParam("username") String username,
+                                  @RequestParam("lend_id") String lend_id)
+    {
+        borrowService.setBookOvertime(username,lend_id);
+        return Result.ok();
+    }
+
+    @PostMapping("/admin/handleBorrowOvertime")
+    public Result handleBookOvertime(@RequestParam("username") String username,
+                                     @RequestParam("lend_id") String lend_id)
+    {
+        borrowService.handleBookOvertime(username,lend_id);
         return Result.ok();
     }
 }

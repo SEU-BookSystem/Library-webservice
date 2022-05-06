@@ -68,7 +68,7 @@ public class MessageController {
     @RequestMapping("/message/nonReadNum")
     public Result nonReadMessageNum(@RequestParam("username") String username)
     {
-        messageService.nonReadMessage(username);
-        return Result.ok();
+        return Result.ok().put("data",messageService.nonReadMessage(username));
     }
+
 }

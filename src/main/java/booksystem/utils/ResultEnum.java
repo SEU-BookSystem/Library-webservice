@@ -31,6 +31,7 @@ public enum ResultEnum {
     BOOK_IS_NOT_ENOUGH(25,"书籍可被预约、可被借阅数量不足"),
     BORROW_IS_MAX(26,"借阅数量已达最大值"),
     OVERTIME_RECODE(27,"有逾期记录"),
+    RENEW_REPEAT(28,"重复续借")
 
 
     ;
