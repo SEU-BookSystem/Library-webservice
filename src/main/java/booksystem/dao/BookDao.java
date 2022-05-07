@@ -35,7 +35,8 @@ public interface BookDao {
     void deleteBookByReferenceNum(String reference_num);
     void deleteBooks(List<String> isbns);
     //更新图书信息
-    void updateBook(Book book);
+    void updateBook(String reference_num,String book_name,String author,String page_num,String price,String isbn,String detail,String publisher,String image,String date,String category_id,int num,String old);
+    void updateBookImg(String reference_num,String image);
 
     //查找用户
 //    String selectBook( String book_name, String author, double price, String press, String edition, String print_time,String main_category_id,String second_category_id,String shop_id);
@@ -52,9 +53,14 @@ public interface BookDao {
 
     int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);
     int fuzzyQueryCount(int queryWhat, String content);
+    int getBookNum();
+    int getBookItemNum();
+    int getBookNumByRef(String reference);
 
     //更新书籍数量
     void updateBookNum(String reference_num,int num);
+
+    String getBookImg(String reference_num);
 
     //有关联错误待删
 //    void updateStatus(String shop_id);

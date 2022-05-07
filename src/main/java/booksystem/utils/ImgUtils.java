@@ -142,11 +142,19 @@ public class ImgUtils {
         //测试用
         try {
 
+//            FTPClient ftpClient = new FTPClient();
+//            ftpClient.connect(FtpServer.hostname, 21);// 创建ftp连接，默认21端口
+//            ftpClient.login(FtpServer.User, FtpServer.Password);
+//
+//            //ftpClient.deleteFile("/usr/local/tomcat/img/sb.jpg");
+//
+//            ftpClient.logout();
+
+
             FTPClient ftpClient = new FTPClient();
             ftpClient.connect(FtpServer.hostname, 21);// 创建ftp连接，默认21端口
             ftpClient.login(FtpServer.User, FtpServer.Password);
 
-            ftpClient.deleteFile("/usr/local/tomcat/img/sb.jpg");
 
             ftpClient.logout();
         }catch (IOException e){

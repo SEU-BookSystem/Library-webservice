@@ -49,10 +49,14 @@
         FROM book where publisher=#{publisher} ORDER BY update_time DESC
     </select>
 
-    <select id="getBookByIsbn" parameterType="String" resultType="booksystem.pojo.Book">
+    <select id="getBookByIsbn" parameterType="String" resultType="java.util.HashMap">
         SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
             (select category_name from category where category.category_id=book.category_id) as second_category
         FROM book where isbn=#{isbn} ORDER BY update_time DESC
+    </select>
+
+    <select id="getBookImg" parameterType="String" resultType="String">
+        SELECT image FROM book where reference_num=#{reference_num}
     </select>
 
     <select id="getBookByReferenceNum" parameterType="String" resultType="java.util.HashMap">
@@ -61,11 +65,17 @@
         FROM book where reference_num=#{reference_num}
     </select>
 
+
     <update id="updateBook">
         update book set book_name=#{book_name},author=#{author},price=#{price},publisher=#{publisher},
                         page_num=#{page_num},detail=#{detail},image=#{image},`date`=#{date},
-                        num=#{num},category_id=#{category_id},update_time=now(),reference_num=#{reference_num}
-        where isbn=#{isbn}
+                        num=#{num},category_id=#{category_id},update_time=now(),reference_num=#{reference_num},isbn=#{isbn}
+        where reference_num=#{old}
+    </update>
+
+    <update id="updateBookImg">
+        update book set image=#{image}
+        where reference_num=#{reference_num}
     </update>
 
     <insert id="addBook">
@@ -201,6 +211,19 @@
         order by LEFT(date,4) DESC
         limit #{start},#{book_num}
     </select>
+
+    <select id="getBookNum" resultType="int">
+        SELECT count(*) FROM book
+    </select>
+
+    <select id="getBookNumByRef" parameterType="java.lang.String" resultType="int">
+        SELECT count(*) FROM bookitem where reference_num=#{reference_num}
+    </select>
+
+    <select id="getBookItemNum" resultType="int">
+        SELECT count(*) FROM bookitem
+    </select>
+
 
 <!--    <update id="updateDetail">-->
 <!--        update book set detail=#{detail},update_time=now() where id=#{book_id}-->

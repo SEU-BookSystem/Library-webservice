@@ -15,6 +15,7 @@ public interface BookItemDao {
 
     //修改一本图书
     void updateBookItem(BookItem bookItem);
+    void updateRef(String pre,String now);
     //修改图书的状态
     void updateStatus(int bar_code,int status);
 

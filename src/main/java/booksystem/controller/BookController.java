@@ -1,17 +1,20 @@
 package booksystem.controller;
 
 import booksystem.dao.BookDao;
+import booksystem.dao.BookItemDao;
 import booksystem.pojo.Book;
+import booksystem.pojo.BookItem;
+import booksystem.pojo.FtpServer;
 import booksystem.service.BookItemService;
 import booksystem.service.BookService;
-import booksystem.utils.BookSpiderUtils;
-import booksystem.utils.Result;
-import booksystem.utils.ResultEnum;
+import booksystem.utils.*;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,8 @@ public class BookController {
     BookItemService bookItemService;
     @Autowired
     BookDao bookDao;
+    @Autowired
+    BookItemDao bookItemDao;
 
 
     @RequestMapping("/book/getAllBook")
@@ -59,6 +64,110 @@ public class BookController {
         return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 
+    //单本删除
+    @PostMapping("/admin/book/addBook")
+    public Result addBook(@RequestParam("book_name") String book_name,
+                          @RequestParam("author") String author,
+                          @RequestParam("page_num") String page_num,
+                          @RequestParam("price") String price,
+                          @RequestParam("isbn") String isbn,
+                          @RequestParam("detail") String detail,
+                          @RequestParam("publisher") String publisher,
+                          @RequestParam("image") MultipartFile img,
+                          @RequestParam("date") String date,
+                          @RequestParam("category_id") String category_id,
+                          @RequestParam("num") int num) {
+        if(isbn.isEmpty()||book_name.isEmpty()||category_id.isEmpty()) {
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(), ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        if(num<=0) {
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(), "num必须大于0");
+        }
+        Map<String,Object>m1=bookDao.getBookByIsbn(isbn);
+        if(m1==null){
+            int n=bookDao.getBookNum();
+            String ref=category_id+"-"+ (100000 + n);
+
+            File imgFile= SFTP.multipartFileToFile(img);
+            String image=SFTP.uploadImg(imgFile);
+
+            Book book=new Book(ref,book_name,author,page_num,price,isbn,detail,publisher,image,date,category_id,num,"");
+            bookDao.addBook(book);
+            for(int i=0;i<num;i++){
+                BookItem bookItem=new BookItem(0,ref,1,"我爱读书一号馆");
+                bookItemDao.addBookItem(bookItem);
+            }
+
+            bookDao.updateBookNum(ref,-num);
+        }else{
+            for(int i=0;i<num;i++){
+                BookItem bookItem=new BookItem(0,m1.get("reference_num").toString(),1,"我爱读书一号馆");
+                bookItemDao.addBookItem(bookItem);
+            }
+            bookDao.updateBookNum(m1.get("reference_num").toString(),-num);
+            return Result.error(201,"书籍已经存在，书目已入库，书籍信息未更改");
+        }
+
+        return Result.ok(ResultEnum.SUCCESS.getMsg());
+    }
+
+
+    @PostMapping("/admin/book/updateBook")
+    public Result updateBook(@RequestParam("reference_num") String reference_num,
+                             @RequestParam("book_name") String book_name,
+                             @RequestParam("author") String author,
+                             @RequestParam("page_num") String page_num,
+                             @RequestParam("price") String price,
+                             @RequestParam("isbn") String isbn,
+                             @RequestParam("detail") String detail,
+                             @RequestParam("publisher") String publisher,
+                             @RequestParam("date") String date,
+                             @RequestParam("category_id") String category_id) {
+        if(reference_num.isEmpty()) {
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(), ResultEnum.DATA_IS_NULL.getMsg());
+        }
+
+        Map<String,Object>m1=bookDao.getBookByReferenceNum(reference_num);
+        if(m1==null){
+            return Result.error(404,"书籍不存在");
+        }else{
+            String image=bookDao.getBookImg(reference_num);
+            String old=reference_num;
+            int num=bookDao.getBookNumByRef(reference_num);
+            if(category_id.equals(m1.get("category_id").toString())){
+
+            }else{
+                reference_num=category_id+reference_num.substring(2);
+            }
+            bookDao.updateBook(reference_num,book_name,author,page_num,price,isbn,detail,publisher,image,date,category_id,num,old);
+            bookItemDao.updateRef(old,reference_num);
+        }
+
+        return Result.ok(ResultEnum.SUCCESS.getMsg());
+    }
+
+
+    @PostMapping("/admin/book/updateImg")
+    public Result updateBookImg(@RequestParam("reference_num") String reference_num,
+                             @RequestParam("image") MultipartFile img) {
+        if(reference_num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        String imagePre=bookDao.getBookImg(reference_num);
+        if(imagePre==null){
+            return Result.error(404,"书籍不存在");
+        }
+        if(imagePre.contains("http://47.100.78.158:8080/img/library")){
+            imagePre=imagePre.replace("http://47.100.78.158:8080/img/library","");
+            SFTP.deleteImg(FtpServer.imgUrl + imagePre);
+
+        }
+
+        File imgFile= SFTP.multipartFileToFile(img);
+        String image=SFTP.uploadImg(imgFile);
+        bookDao.updateBookImg(reference_num,image);
+        return Result.ok(ResultEnum.SUCCESS.getMsg());
+    }
     //批量删除
     @DeleteMapping("/admin/book/multiDelete")
     public Result multiDeleteBook(@RequestParam("reference_nums") List<String> reference_nums) {

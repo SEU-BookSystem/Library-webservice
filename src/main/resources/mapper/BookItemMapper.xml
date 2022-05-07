@@ -62,6 +62,10 @@
         where bar_code=#{bar_code}
     </update>
 
+    <update id="updateRef" parameterType="String">
+        update bookitem set reference_num=#{now} where reference_num=#{pre}
+    </update>
+
     <update id="updateStatus">
         update bookitem set `status`=#{status} where bar_code=#{bar_code}
     </update>

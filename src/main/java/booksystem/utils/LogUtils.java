@@ -24,4 +24,11 @@ public class LogUtils {
         return map;
     }
 
+//    public static void main(String[] args) {
+//        String st="S1-100234";
+//        String p="T2";
+//        st=p+st.substring(2);
+//        System.out.println(st);
+//    }
+
 }
