@@ -17,6 +17,7 @@ public interface BorrowDao {
     int getBorrowNumByUser(String username);
     //查询用户的逾期记录
     List<Map<String,Object>> getOvertimeBorrow(String username);
+
     //根据条码号查询借阅信息
     Map<String,Object> getBorrowByBarCode(int bar_code);
     Map<String,Object> getReserveByBarCode(int bar_code);
@@ -27,4 +28,7 @@ public interface BorrowDao {
 
     //删除借阅信息
     void deleteBorrow(String lend_id);
+
+    //后台的模糊查询
+    List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content);
 }

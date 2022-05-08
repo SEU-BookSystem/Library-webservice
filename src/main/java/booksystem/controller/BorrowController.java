@@ -1,5 +1,6 @@
 package booksystem.controller;
 
+import booksystem.dao.BorrowDao;
 import booksystem.service.BorrowService;
 import booksystem.utils.Result;
 import booksystem.utils.ResultEnum;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 
 @CrossOrigin(origins="*",maxAge = 3600)
@@ -17,6 +19,9 @@ import java.util.List;
 public class BorrowController {
     @Autowired
     BorrowService borrowService;
+
+    @Autowired
+    BorrowDao borrowDao;
 
     @PostMapping("/book/addReserve")
     public Result addDirectReserve(@RequestParam("reference_num") String reference_num,
@@ -137,4 +142,36 @@ public class BorrowController {
         borrowService.handleBookOvertime(username,lend_id);
         return Result.ok();
     }
+
+    /**
+     * @param page_num 第几页
+     * @param each_num 每页多少条数据
+     * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、
+     * @param content 查询内容
+     * @return
+     */
+    @RequestMapping("/admin/borrow/fuzzyQuery")
+    public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
+                                  @RequestParam("each_num")String each_num,
+                                  @RequestParam("queryWhat") String queryWhat,//可缺省
+                                  @RequestParam("content") String content//可缺省
+    ) {
+        if(page_num.isEmpty()||queryWhat.isEmpty()||each_num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=borrowDao.adminFuzzyQuery(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(each_num),Integer.parseInt(each_num),
+                Integer.parseInt(queryWhat),"%"+content+"%"
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("start_time",result.get(i).get("start_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("end_time",result.get(i).get("end_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
 }

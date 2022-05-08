@@ -254,7 +254,7 @@ public class BookController {
      */
     @RequestMapping("/book/getPageByYear")
     public Result getPageByYear(@RequestParam("page_num")String page_num,
-                          @RequestParam("book_num")String book_num,
+                          @RequestParam("each_num")String book_num,
                           @RequestParam("year_before") String year_before,
                           @RequestParam("year_after") String year_after
                           ) {
@@ -280,7 +280,7 @@ public class BookController {
      */
     @RequestMapping("/book/getMainPage")
     public Result getPageByCategory(@RequestParam("page_num")String page_num,
-                          @RequestParam("book_num")String book_num,
+                          @RequestParam("each_num")String book_num,
                           @RequestParam("category") String category
     ) {
         if(page_num.isEmpty()||book_num.isEmpty()){
@@ -310,6 +310,14 @@ public class BookController {
         }
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
     }
+
+//    @RequestMapping("/admin/book/getStatusNum")
+//    public Result getStatusNum(@RequestParam("status") int status) {
+//        if(status<1||status>4){
+//            return Result.error(303,"状态必须在1到4之间");
+//        }
+//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("num",bookDao.getStatusNum(status));
+//    }
 
 
 
@@ -386,7 +394,7 @@ public class BookController {
      */
     @RequestMapping("/book/fuzzyQuery")
     public Result fuzzyQuery(@RequestParam("page_num")String page_num,
-                          @RequestParam("book_num")String book_num,
+                          @RequestParam("each_num")String book_num,
                           @RequestParam("queryWhat") String queryWhat,//可缺省
                           @RequestParam("content") String content//可缺省
     ) {
@@ -394,6 +402,34 @@ public class BookController {
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
         }
         List<Map<String,Object>> result=bookDao.fuzzyQuery(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),
+                Integer.parseInt(queryWhat),"%"+content+"%"
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
+
+    /**
+     * @param page_num 第几页
+     * @param book_num 每页多少书
+     * @param queryWhat 查询: 1:书籍名称、2:ISBN、3:索书号、4:作者、5:出版社
+     * @param content 查询内容
+     * @return
+     */
+    @RequestMapping("/admin/book/fuzzyQuery")
+    public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
+                             @RequestParam("each_num")String book_num,
+                             @RequestParam("queryWhat") String queryWhat,//可缺省
+                             @RequestParam("content") String content//可缺省
+    ) {
+        if(page_num.isEmpty()||book_num.isEmpty()||queryWhat.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=bookDao.adminFuzzyQuery(
                 (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),
                 Integer.parseInt(queryWhat),"%"+content+"%"
         );

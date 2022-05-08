@@ -46,6 +46,30 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/admin/getUsers")
+    public Result getUsers(@RequestParam("page_num")int page_num,
+                           @RequestParam("each_num")int book_num){
+        if(page_num<=0||book_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        List<Map<String,Object>> result=userDao.getUsers((page_num-1)*book_num,book_num);
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("create_time",result.get(i).get("create_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("access_time",result.get(i).get("access_time").toString()
+                    .replace('T',' '));
+        }
+
+        if(!result.isEmpty())
+        {
+            return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        }else{
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+    }
+
     //获取所有用户数量
     @RequestMapping("/admin/getAllUserNum")
     public Result getAllUserNum(){
@@ -69,18 +93,6 @@ public class UserController {
             return Result.error(ResultEnum.User_NOT_EXIST.getCode(),ResultEnum.User_NOT_EXIST.getMsg());
         }
     }
-
-//    //用户user_id查找用户
-//    @RequestMapping("/user/getByID")
-//    public Result getUserByID(@RequestParam("user_id") String user_id){
-//        User result=userService.getUserByID(user_id);
-//        if(result!=null)
-//        {
-//            return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
-//        }else{
-//            return Result.error(ResultEnum.User_NOT_EXIST.getCode(),ResultEnum.User_NOT_EXIST.getMsg());
-//        }
-//    }
 
     @PostMapping("/admin/register")
     public Result register(@RequestParam("phone") String phone,
@@ -126,5 +138,36 @@ public class UserController {
         }else{
             return Result.error(ResultEnum.UPDATE_FAIL.getCode(),ResultEnum.UPDATE_FAIL.getMsg());
         }
+    }
+
+    /**
+     * @param page_num 第几页
+     * @param user_num 每页多少用户
+     * @param queryWhat 查询: 1:读者姓名、2:身份证号、3:电话号码
+     * @param content 查询内容
+     * @return
+     */
+    @RequestMapping("/admin/user/fuzzyQuery")
+    public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
+                                  @RequestParam("each_num")String user_num,
+                                  @RequestParam("queryWhat") String queryWhat,//可缺省
+                                  @RequestParam("content") String content//可缺省
+    ) {
+        if(page_num.isEmpty()||queryWhat.isEmpty()||user_num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=userDao.adminFuzzyQuery(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(user_num),Integer.parseInt(user_num),
+                Integer.parseInt(queryWhat),"%"+content+"%"
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("create_time",result.get(i).get("create_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("access_time",result.get(i).get("access_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
     }
 }

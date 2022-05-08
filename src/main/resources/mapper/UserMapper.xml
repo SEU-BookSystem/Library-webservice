@@ -6,6 +6,11 @@
         select * from user
     </select>
 
+    <select id="getUsers" resultType="java.util.HashMap">
+        select * from user order by create_time DESC
+            limit #{start},#{book_num}
+    </select>
+
     <select id="getAllUserNum" resultType="int">
         select count(*) from user
     </select>
@@ -24,19 +29,12 @@
         update user set password=#{password},name=#{name},age=#{age},gender=#{gender},update_time=now() where username=#{username}
     </update>
 
-    <update id="updateCode"  parameterType="String">
-        update user set activationCode=#{activationCode} where username=#{username}
-    </update>
     <update id="updateStatus" >
         update user set status=#{status} where username=#{username}
     </update>
 
     <update id="updateTime" >
         update user set update_time=now() where username=#{username}
-    </update>
-
-    <update id="updateIdentity" >
-        update user set identity =#{identity } where username=#{username}
     </update>
 
     <update id="deleteUser" parameterType="String">
@@ -46,5 +44,33 @@
     <update id="accessTime">
         update user set access_time=now() where username=#{username}
     </update>
+
+
+    <select id="adminFuzzyQuery" resultType="java.util.HashMap">
+        SELECT * FROM user where 1=1
+        <choose>
+            <when test="queryWhat==1">
+                and name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and id_card like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and username like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by create_time DESC
+        limit #{start},#{each_num}
+    </select>
 
 </mapper>

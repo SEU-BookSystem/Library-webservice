@@ -58,6 +58,9 @@
     <select id="getBookImg" parameterType="String" resultType="String">
         SELECT image FROM book where reference_num=#{reference_num}
     </select>
+<!--    <select id="getStatusNum" parameterType="int" resultType="int">-->
+<!--        SELECT count(*) FROM bookitem where status=#{status}-->
+<!--    </select>-->
 
     <select id="getBookByReferenceNum" parameterType="String" resultType="java.util.HashMap">
         SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
@@ -124,7 +127,7 @@
             </otherwise>
         </choose>
         order by LEFT(date,4) DESC
-        limit #{start},#{book_num}
+        limit #{start},#{each_num}
     </select>
     <select id="getMainPage" resultType="java.util.HashMap">
         SELECT * FROM book where 1=1
@@ -157,7 +160,7 @@
             </otherwise>
         </choose>
         order by LEFT(date,4) DESC
-        limit #{start},#{book_num}
+        limit #{start},#{each_num}
     </select>
 
     <select id="getNewBook" resultType="java.util.HashMap">
@@ -209,7 +212,58 @@
             </otherwise>
         </choose>
         order by LEFT(date,4) DESC
-        limit #{start},#{book_num}
+        limit #{start},#{each_num}
+    </select>
+
+    <select id="adminFuzzyQuery" resultType="java.util.HashMap">
+        SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
+        (select category_name from category where category.category_id=book.category_id) as second_category
+        FROM book where 1=1
+        <choose>
+            <when test="queryWhat==0">
+                and (book_name like #{content} or author like #{content}
+                or publisher like #{content} or detail like #{content})
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==1">
+                and book_name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and isbn like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and reference_num like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and author like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==5">
+                and publisher like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by LEFT(date,4) DESC
+        limit #{start},#{each_num}
     </select>
 
     <select id="getBookNum" resultType="int">

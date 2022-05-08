@@ -12,6 +12,7 @@ import java.util.Map;
 public interface UserDao {
     //获取所有用户
     List<Map<String,Object>> getAllUser();
+    List<Map<String,Object>> getUsers(int start, int book_num);
     int getAllUserNum();
     //根据用户username获取用户信息
     User getUserByName(String username);
@@ -24,7 +25,8 @@ public interface UserDao {
     int updateUser(String username,String password,String name,int age,String gender);
     //更新用户激活状态和激活码
     int updateStatus(String username,int status);
-    int updateCode(String username,String activationCode);
     int updateTime(String username);
     int accessTime(String username);
+
+    List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content);
 }
