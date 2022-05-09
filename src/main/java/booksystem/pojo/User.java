@@ -8,7 +8,7 @@ public class User {
     String update_time;//注册时间
     String access_time;
     String id_card;
-    int status;
+    int status;//状态：0正常，1违规，2注销
     int age;
     String gender;
 

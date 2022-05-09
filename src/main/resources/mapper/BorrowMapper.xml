@@ -62,6 +62,40 @@
             <otherwise>
             </otherwise>
         </choose>
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by update_time DESC
+        limit #{start},#{each_num}
+    </select>
+
+    <select id="query" resultType="java.util.HashMap">
+        SELECT * FROM borrow where 1=1
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
         order by update_time DESC
         limit #{start},#{each_num}
     </select>

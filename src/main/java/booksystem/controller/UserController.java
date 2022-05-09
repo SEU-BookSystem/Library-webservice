@@ -52,6 +52,11 @@ public class UserController {
         if(page_num<=0||book_num<=0){
             return Result.error(33,"数据必须为正");
         }
+        int count=userDao.getUsersCount();
+        int p_count=(count%book_num==0)?(count/book_num):(count/book_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
+        }
         List<Map<String,Object>> result=userDao.getUsers((page_num-1)*book_num,book_num);
         for(int i=0;i<result.size();i++){
             result.get(i).put("create_time",result.get(i).get("create_time").toString()
@@ -64,7 +69,7 @@ public class UserController {
 
         if(!result.isEmpty())
         {
-            return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+            return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
         }else{
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
         }
@@ -128,10 +133,11 @@ public class UserController {
                              @RequestParam("name") String name,
                              @RequestParam("age") String age,
                              @RequestParam("gender") String gender,
+                             @RequestParam("id_card") String id_card,
                              ServletRequest request){
         String token=((HttpServletRequest)request).getHeader("token");
         String username= TokenUtils.parseToken(token).get("username").toString();
-        int result=userService.updateUser(username,password,name,Integer.parseInt(age),gender);
+        int result=userService.updateUser(username,password,name,Integer.parseInt(age),gender,id_card);
         if(result!=0)
         {
             return Result.ok(ResultEnum.SUCCESS.getMsg());
@@ -142,23 +148,28 @@ public class UserController {
 
     /**
      * @param page_num 第几页
-     * @param user_num 每页多少用户
+     * @param each_num 每页多少用户
      * @param queryWhat 查询: 1:读者姓名、2:身份证号、3:电话号码
      * @param content 查询内容
      * @return
      */
     @RequestMapping("/admin/user/fuzzyQuery")
-    public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
-                                  @RequestParam("each_num")String user_num,
-                                  @RequestParam("queryWhat") String queryWhat,//可缺省
+    public Result adminFuzzyQuery(@RequestParam("page_num")int page_num,
+                                  @RequestParam("each_num")int each_num,
+                                  @RequestParam("queryWhat") int queryWhat,//可缺省
                                   @RequestParam("content") String content//可缺省
     ) {
-        if(page_num.isEmpty()||queryWhat.isEmpty()||user_num.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=userDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%");
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=userDao.adminFuzzyQuery(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(user_num),Integer.parseInt(user_num),
-                Integer.parseInt(queryWhat),"%"+content+"%"
+                (page_num-1)*each_num,each_num,
+                queryWhat,"%"+content+"%"
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("create_time",result.get(i).get("create_time").toString()
@@ -168,6 +179,6 @@ public class UserController {
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
                     .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 }

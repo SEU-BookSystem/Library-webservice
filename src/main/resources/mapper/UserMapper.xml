@@ -11,6 +11,10 @@
             limit #{start},#{book_num}
     </select>
 
+    <select id="getUsersCount" resultType="int">
+        select count(*) from user
+    </select>
+
     <select id="getAllUserNum" resultType="int">
         select count(*) from user
     </select>
@@ -26,7 +30,7 @@
     </insert>
 
     <update id="updateUser"  parameterType="booksystem.pojo.User">
-        update user set password=#{password},name=#{name},age=#{age},gender=#{gender},update_time=now() where username=#{username}
+        update user set password=#{password},name=#{name},age=#{age},gender=#{gender},update_time=now(),id_card=#{id_card} where username=#{username}
     </update>
 
     <update id="updateStatus" >
@@ -71,6 +75,31 @@
         </choose>
         order by create_time DESC
         limit #{start},#{each_num}
+    </select>
+
+    <select id="adminFuzzyQueryCount" resultType="int">
+        SELECT count(*) FROM user where 1=1
+        <choose>
+            <when test="queryWhat==1">
+                and name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and id_card like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and username like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
     </select>
 
 </mapper>

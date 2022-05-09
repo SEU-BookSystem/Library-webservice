@@ -249,51 +249,61 @@ public class BookController {
 
     /**
      * @param page_num 第几页
-     * @param book_num 每页多少书
+     * @param each_num 每页多少书
      * @return
      */
     @RequestMapping("/book/getPageByYear")
-    public Result getPageByYear(@RequestParam("page_num")String page_num,
-                          @RequestParam("each_num")String book_num,
+    public Result getPageByYear(@RequestParam("page_num")int page_num,
+                                @RequestParam("each_num")int each_num,
                           @RequestParam("year_before") String year_before,
                           @RequestParam("year_after") String year_after
                           ) {
-        if(page_num.isEmpty()||book_num.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=bookDao.getPageByYearCount(year_before,year_after);
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=bookDao.getPageByYear(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),year_before,year_after
+                (page_num-1)*each_num,each_num,year_before,year_after
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
                     .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 
     /**
      *
      * @param page_num 第几页
-     * @param book_num 每页多少书
+     * @param each_num 每页多少书
      * @param category 种类：0：社科，1：文学，2：自然科学，3，其他
      * @return
      */
     @RequestMapping("/book/getMainPage")
-    public Result getPageByCategory(@RequestParam("page_num")String page_num,
-                          @RequestParam("each_num")String book_num,
-                          @RequestParam("category") String category
+    public Result getPageByCategory(@RequestParam("page_num")int page_num,
+                                    @RequestParam("each_num")int each_num,
+                          @RequestParam("category") int category
     ) {
-        if(page_num.isEmpty()||book_num.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=bookDao.getMainPageCount(category);
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=bookDao.getMainPage(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),Integer.parseInt(category)
+                (page_num-1)*each_num,each_num,category
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
                     .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 
     @RequestMapping("/book/getNewBook")
@@ -311,133 +321,69 @@ public class BookController {
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
     }
 
-//    @RequestMapping("/admin/book/getStatusNum")
-//    public Result getStatusNum(@RequestParam("status") int status) {
-//        if(status<1||status>4){
-//            return Result.error(303,"状态必须在1到4之间");
-//        }
-//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("num",bookDao.getStatusNum(status));
-//    }
-
-
-
-//    @PostMapping("/spider")
-//    public Result test(@RequestParam("id") int id,
-//                       @RequestParam("count") int count,
-//                       @RequestParam("limit") int limit)
-//    {
-//        BookSpiderUtils bookSpiderUtils=new BookSpiderUtils();
-//        ArrayList<Book> bookList=bookSpiderUtils.getBooks(id,count,limit);
-//        for(Book book:bookList)
-//        {
-//            bookDao.addBook(book);
-//            bookItemService.addBookItem(book.getNum(),book.getReference_num());
-//        }
-//        return Result.ok();
-//    }
-
-//    /**
-//     * @param page_num 第几页
-//     * @param book_num 每页多少书
-//     * @param style 排序方式 1:总销量,2:上架时间(所有),
-//     * @param category_id 一级目录id
-//     * @param year 年份筛选
-//     * @return
-//     */
-//    @RequestMapping("/book/getPage")
-//    public Result getPage(@RequestParam("page_num")String page_num,
-//                          @RequestParam("book_num")String book_num,
-//                          @RequestParam("style")String style,
-//                          @RequestParam("main_category_id") String category_id,//可缺省
-//                          @RequestParam("year") String year,   //可缺省
-//                          @RequestParam("year_before") String year_before,   //可缺省
-//                          @RequestParam("year_after") String year_after,   //可缺省
-//                          ) {
-//        if(page_num.isEmpty()||book_num.isEmpty()||style.isEmpty()){
-//            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
-//        }
-//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",bookService.getPage(
-//                Integer.parseInt(page_num),Integer.parseInt(book_num),Integer.parseInt(style),
-//                category_id,year,year_before,year_after
-//        ));
-//    }
-//
-//    /**
-//     * @param main_category_id 一级目录id
-//     * @param second_category_id 二级目录id
-//     * @param year 年份筛选
-//     * @param year_before
-//     * @param year_after
-//     * @param shop_id
-//     * @return
-//     */
-//    @RequestMapping("/book/getPageCount")
-//    public Result getPageCount(
-//                          @RequestParam("main_category_id") String main_category_id,//可缺省
-//                          @RequestParam("second_category_id") String second_category_id,//可缺省
-//                          @RequestParam("year") String year,   //可缺省
-//                          @RequestParam("year_before") String year_before,   //可缺省
-//                          @RequestParam("year_after") String year_after,   //可缺省
-//                          @RequestParam("shop_id") String shop_id   //可缺省
-//    ) {
-//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("count",bookDao.getPageCount(
-//                main_category_id,second_category_id,year,year_before,year_after,shop_id
-//        ));
-//    }
-//
     /**
      * @param page_num 第几页
-     * @param book_num 每页多少书
+     * @param each_num 每页多少书
      * @param queryWhat 查询: 1:按书名模糊查询,2:按作者模糊查询,3:按出版社模糊查询,4:按内容详情模糊查询
      * @param content 查询内容
      * @return
      */
     @RequestMapping("/book/fuzzyQuery")
-    public Result fuzzyQuery(@RequestParam("page_num")String page_num,
-                          @RequestParam("each_num")String book_num,
-                          @RequestParam("queryWhat") String queryWhat,//可缺省
+    public Result fuzzyQuery(@RequestParam("page_num")int page_num,
+                             @RequestParam("each_num")int each_num,
+                          @RequestParam("queryWhat") int queryWhat,//可缺省
                           @RequestParam("content") String content//可缺省
     ) {
-        if(page_num.isEmpty()||book_num.isEmpty()||queryWhat.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=bookDao.fuzzyQueryCount(queryWhat,"%"+content+"%");
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=bookDao.fuzzyQuery(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),
-                Integer.parseInt(queryWhat),"%"+content+"%"
+                (page_num-1)*each_num,each_num,
+                queryWhat,"%"+content+"%"
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
                     .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 
 
     /**
      * @param page_num 第几页
-     * @param book_num 每页多少书
+     * @param each_num 每页多少书
      * @param queryWhat 查询: 1:书籍名称、2:ISBN、3:索书号、4:作者、5:出版社
      * @param content 查询内容
      * @return
      */
     @RequestMapping("/admin/book/fuzzyQuery")
-    public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
-                             @RequestParam("each_num")String book_num,
-                             @RequestParam("queryWhat") String queryWhat,//可缺省
+    public Result adminFuzzyQuery(@RequestParam("page_num")int page_num,
+                                  @RequestParam("each_num")int each_num,
+                                  @RequestParam("queryWhat") int queryWhat,//可缺省
                              @RequestParam("content") String content//可缺省
     ) {
-        if(page_num.isEmpty()||book_num.isEmpty()||queryWhat.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=bookDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%");
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=bookDao.adminFuzzyQuery(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(book_num),Integer.parseInt(book_num),
-                Integer.parseInt(queryWhat),"%"+content+"%"
+                (page_num-1)*each_num,each_num,
+                queryWhat,"%"+content+"%"
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
                     .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 //
 //
@@ -560,5 +506,81 @@ public class BookController {
 //        bookDao.updateDetail(book_id,detail);
 //        return Result.ok(ResultEnum.SUCCESS.getMsg());
 //    }
+
+
+//    @RequestMapping("/admin/book/getStatusNum")
+//    public Result getStatusNum(@RequestParam("status") int status) {
+//        if(status<1||status>4){
+//            return Result.error(303,"状态必须在1到4之间");
+//        }
+//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("num",bookDao.getStatusNum(status));
+//    }
+
+
+
+//    @PostMapping("/spider")
+//    public Result test(@RequestParam("id") int id,
+//                       @RequestParam("count") int count,
+//                       @RequestParam("limit") int limit)
+//    {
+//        BookSpiderUtils bookSpiderUtils=new BookSpiderUtils();
+//        ArrayList<Book> bookList=bookSpiderUtils.getBooks(id,count,limit);
+//        for(Book book:bookList)
+//        {
+//            bookDao.addBook(book);
+//            bookItemService.addBookItem(book.getNum(),book.getReference_num());
+//        }
+//        return Result.ok();
+//    }
+
+//    /**
+//     * @param page_num 第几页
+//     * @param book_num 每页多少书
+//     * @param style 排序方式 1:总销量,2:上架时间(所有),
+//     * @param category_id 一级目录id
+//     * @param year 年份筛选
+//     * @return
+//     */
+//    @RequestMapping("/book/getPage")
+//    public Result getPage(@RequestParam("page_num")String page_num,
+//                          @RequestParam("book_num")String book_num,
+//                          @RequestParam("style")String style,
+//                          @RequestParam("main_category_id") String category_id,//可缺省
+//                          @RequestParam("year") String year,   //可缺省
+//                          @RequestParam("year_before") String year_before,   //可缺省
+//                          @RequestParam("year_after") String year_after,   //可缺省
+//                          ) {
+//        if(page_num.isEmpty()||book_num.isEmpty()||style.isEmpty()){
+//            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+//        }
+//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",bookService.getPage(
+//                Integer.parseInt(page_num),Integer.parseInt(book_num),Integer.parseInt(style),
+//                category_id,year,year_before,year_after
+//        ));
+//    }
+//
+//    /**
+//     * @param main_category_id 一级目录id
+//     * @param second_category_id 二级目录id
+//     * @param year 年份筛选
+//     * @param year_before
+//     * @param year_after
+//     * @param shop_id
+//     * @return
+//     */
+//    @RequestMapping("/book/getPageCount")
+//    public Result getPageCount(
+//                          @RequestParam("main_category_id") String main_category_id,//可缺省
+//                          @RequestParam("second_category_id") String second_category_id,//可缺省
+//                          @RequestParam("year") String year,   //可缺省
+//                          @RequestParam("year_before") String year_before,   //可缺省
+//                          @RequestParam("year_after") String year_after,   //可缺省
+//                          @RequestParam("shop_id") String shop_id   //可缺省
+//    ) {
+//        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("count",bookDao.getPageCount(
+//                main_category_id,second_category_id,year,year_before,year_after,shop_id
+//        ));
+//    }
+//
 
 }

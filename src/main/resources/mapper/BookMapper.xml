@@ -109,7 +109,7 @@
 
 
     <select id="getPageByYear" resultType="java.util.HashMap">
-        SELECT * (select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
+        SELECT *, (select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
         (select category_name from category where category.category_id=book.category_id) as second_category
         FROM book where 1=1
         <choose>
@@ -129,8 +129,28 @@
         order by LEFT(date,4) DESC
         limit #{start},#{each_num}
     </select>
+
+    <select id="getPageByYearCount" resultType="int">
+        SELECT count(*) FROM book where 1=1
+        <choose>
+            <when test="year_before !=''">
+                and CAST(LEFT(date,4) as SIGNED)&lt;=CAST(#{year_before} as SIGNED)
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="year_after !=''">
+                and CAST(LEFT(date,4) as SIGNED)&gt;=CAST(#{year_after} as SIGNED)
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
     <select id="getMainPage" resultType="java.util.HashMap">
-        SELECT * FROM book where 1=1
+        SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
+        (select category_name from category where category.category_id=book.category_id) as second_category FROM book where 1=1
         <choose>
             <when test="category ==0">
                 and LEFT(category_id,1) in ('A' ,'B','C','D','E','F','K','H','G','J')
@@ -161,6 +181,38 @@
         </choose>
         order by LEFT(date,4) DESC
         limit #{start},#{each_num}
+    </select>
+
+    <select id="getMainPageCount" resultType="int">
+        SELECT count(*) FROM book where 1=1
+        <choose>
+            <when test="category ==0">
+                and LEFT(category_id,1) in ('A' ,'B','C','D','E','F','K','H','G','J')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="category ==1">
+                and LEFT(category_id,1) in ('I')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="category ==2">
+                and LEFT(category_id,1) in ('N','O','P','Q','R','S','T','U','V','X')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="category ==3">
+                and LEFT(category_id,1) in ('Z')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getNewBook" resultType="java.util.HashMap">
@@ -215,6 +267,47 @@
         limit #{start},#{each_num}
     </select>
 
+    <select id="fuzzyQueryCount" resultType="int">
+        SELECT count(*)
+        FROM book where 1=1
+        <choose>
+            <when test="queryWhat==0">
+                and (book_name like #{content} or author like #{content}
+                or publisher like #{content} or detail like #{content})
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==1">
+                and book_name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and author like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and publisher like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and detail like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
     <select id="adminFuzzyQuery" resultType="java.util.HashMap">
         SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
         (select category_name from category where category.category_id=book.category_id) as second_category
@@ -264,6 +357,54 @@
         </choose>
         order by LEFT(date,4) DESC
         limit #{start},#{each_num}
+    </select>
+
+    <select id="adminFuzzyQueryCount" resultType="int">
+        SELECT count(*)
+        FROM book where 1=1
+        <choose>
+            <when test="queryWhat==0">
+                and (book_name like #{content} or author like #{content}
+                or publisher like #{content} or detail like #{content})
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==1">
+                and book_name like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and isbn like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and reference_num like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and author like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==5">
+                and publisher like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
     </select>
 
     <select id="getBookNum" resultType="int">
@@ -480,46 +621,7 @@
 <!--        limit #{start},#{book_num}-->
 <!--    </select>-->
 
-    <select id="fuzzyQueryCount" resultType="int">
-        SELECT count(id)
-        FROM book where repertory>=0
-        <choose>
-            <when test="queryWhat==0">
-                and (book_name like #{content} or author like #{content}
-                or press like #{content} or detail like #{content})
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="queryWhat==1">
-                and book_name like #{content}
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="queryWhat==2">
-                and author like #{content}
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="queryWhat==3">
-                and press like #{content}
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="queryWhat==4">
-                and detail like #{content}
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-    </select>
+
 
     <update id="updateStatus" parameterType="String">
         update book set repertory=-1 where shop_id=#{shop_id}

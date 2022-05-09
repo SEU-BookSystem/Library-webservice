@@ -146,22 +146,52 @@ public class BorrowController {
     /**
      * @param page_num 第几页
      * @param each_num 每页多少条数据
+     * @param borrow_reserve 0：预约  1：借阅
+     * @return
+     */
+    @RequestMapping("/admin/borrow/query")
+    public Result query(@RequestParam("page_num")String page_num,
+                        @RequestParam("each_num")String each_num,
+                        @RequestParam("borrow_reserve")int borrow_reserve
+    ) {
+        if(page_num.isEmpty()||each_num.isEmpty()){
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        List<Map<String,Object>> result=borrowDao.query(
+                (Integer.parseInt(page_num)-1)*Integer.parseInt(each_num),Integer.parseInt(each_num),borrow_reserve
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("start_time",result.get(i).get("start_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("end_time",result.get(i).get("end_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
+    /**
+     * @param page_num 第几页
+     * @param each_num 每页多少条数据
      * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、
      * @param content 查询内容
+     * @param borrow_reserve 0：预约  1：借阅
      * @return
      */
     @RequestMapping("/admin/borrow/fuzzyQuery")
     public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
                                   @RequestParam("each_num")String each_num,
                                   @RequestParam("queryWhat") String queryWhat,//可缺省
-                                  @RequestParam("content") String content//可缺省
+                                  @RequestParam("content") String content,//可缺省
+                                  @RequestParam("borrow_reserve")int borrow_reserve
     ) {
         if(page_num.isEmpty()||queryWhat.isEmpty()||each_num.isEmpty()){
             return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
         }
         List<Map<String,Object>> result=borrowDao.adminFuzzyQuery(
                 (Integer.parseInt(page_num)-1)*Integer.parseInt(each_num),Integer.parseInt(each_num),
-                Integer.parseInt(queryWhat),"%"+content+"%"
+                Integer.parseInt(queryWhat),"%"+content+"%",borrow_reserve
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()

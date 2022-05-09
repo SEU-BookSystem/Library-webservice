@@ -46,14 +46,22 @@ public interface BookDao {
 
     //分页和模糊查询
     List<Map<String,Object>> getPage(int start, int book_num, int style, String main_id, String second_id, String year,String year_before,String year_after,String shop_id);
+
     List<Map<String,Object>> getPageByYear(int start, int each_num, String year_before,String year_after);
     List<Map<String,Object>> getMainPage(int start, int each_num, int category);
     List<Map<String,Object>> getNewBook(int num);
     List<Map<String,Object>> fuzzyQuery(int start, int each_num, int queryWhat, String content);
     List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content);
 
-    int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);
+
+    int getPageByYearCount(String year_before,String year_after);
+    int getMainPageCount(int category);
     int fuzzyQueryCount(int queryWhat, String content);
+    int adminFuzzyQueryCount(int queryWhat, String content);
+
+
+    int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);
+
     int getBookNum();
     int getBookItemNum();
     int getBookNumByRef(String reference);
