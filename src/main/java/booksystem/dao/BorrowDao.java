@@ -32,4 +32,8 @@ public interface BorrowDao {
     //后台的模糊查询
     List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content,int borrow_reserve);
     List<Map<String,Object>> query(int start, int each_num,int borrow_reserve);
+
+    int adminFuzzyQueryCount(int queryWhat, String content,int borrow_reserve);
+    int queryCount(int borrow_reserve);
+
 }

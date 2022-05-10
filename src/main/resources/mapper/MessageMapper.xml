@@ -26,4 +26,14 @@
     <select id="nonReadMessage" resultType="int">
         select count(*) from message where username=#{username} and is_read=0
     </select>
+
+    <select id="myQuery" resultType="java.util.HashMap">
+        SELECT * FROM message where username=#{username}
+        order by send_time DESC
+        limit #{start},#{each_num}
+    </select>
+
+    <select id="myQueryCount" resultType="int">
+        SELECT count(*) FROM message where username=#{username}
+    </select>
 </mapper>

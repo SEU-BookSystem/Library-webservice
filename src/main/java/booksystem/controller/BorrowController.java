@@ -150,25 +150,30 @@ public class BorrowController {
      * @return
      */
     @RequestMapping("/admin/borrow/query")
-    public Result query(@RequestParam("page_num")String page_num,
-                        @RequestParam("each_num")String each_num,
+    public Result query(@RequestParam("page_num")int page_num,
+                        @RequestParam("each_num")int each_num,
                         @RequestParam("borrow_reserve")int borrow_reserve
     ) {
-        if(page_num.isEmpty()||each_num.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=borrowDao.queryCount(borrow_reserve);
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=borrowDao.query(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(each_num),Integer.parseInt(each_num),borrow_reserve
+                (page_num-1)*each_num,each_num,borrow_reserve
         );
         for(int i=0;i<result.size();i++){
+            result.get(i).put("end_time",result.get(i).get("end_time").toString()
+                    .replace('T',' '));
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
                     .replace('T',' '));
             result.get(i).put("start_time",result.get(i).get("start_time").toString()
                     .replace('T',' '));
-            result.get(i).put("end_time",result.get(i).get("end_time").toString()
-                    .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 
     /**
@@ -180,18 +185,24 @@ public class BorrowController {
      * @return
      */
     @RequestMapping("/admin/borrow/fuzzyQuery")
-    public Result adminFuzzyQuery(@RequestParam("page_num")String page_num,
-                                  @RequestParam("each_num")String each_num,
-                                  @RequestParam("queryWhat") String queryWhat,//可缺省
+    public Result adminFuzzyQuery(@RequestParam("page_num")int page_num,
+                                  @RequestParam("each_num")int each_num,
+                                  @RequestParam("queryWhat") int queryWhat,//可缺省
                                   @RequestParam("content") String content,//可缺省
                                   @RequestParam("borrow_reserve")int borrow_reserve
     ) {
-        if(page_num.isEmpty()||queryWhat.isEmpty()||each_num.isEmpty()){
-            return Result.error(ResultEnum.DATA_IS_NULL.getCode(),ResultEnum.DATA_IS_NULL.getMsg());
+
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=borrowDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%",borrow_reserve);
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=borrowDao.adminFuzzyQuery(
-                (Integer.parseInt(page_num)-1)*Integer.parseInt(each_num),Integer.parseInt(each_num),
-                Integer.parseInt(queryWhat),"%"+content+"%",borrow_reserve
+                (page_num-1)*each_num,each_num,
+                queryWhat,"%"+content+"%",borrow_reserve
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
@@ -201,7 +212,8 @@ public class BorrowController {
             result.get(i).put("end_time",result.get(i).get("end_time").toString()
                     .replace('T',' '));
         }
-        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
+
 
 }

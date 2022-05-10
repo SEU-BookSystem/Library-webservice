@@ -80,6 +80,47 @@
         limit #{start},#{each_num}
     </select>
 
+    <select id="adminFuzzyQueryCount" resultType="int">
+        SELECT count(*) FROM borrow where 1=1
+        <choose>
+            <when test="queryWhat==1">
+                and username like #{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==2">
+                and bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where book_name like #{content}))
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==3">
+                and bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where isbn like #{content}))
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
     <select id="query" resultType="java.util.HashMap">
         SELECT * FROM borrow where 1=1
         <choose>
@@ -98,6 +139,24 @@
         </choose>
         order by update_time DESC
         limit #{start},#{each_num}
+    </select>
+
+    <select id="queryCount" resultType="int">
+        SELECT count(*) FROM borrow where 1=1
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
     </select>
 
 

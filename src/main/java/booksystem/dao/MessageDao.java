@@ -3,6 +3,9 @@ package booksystem.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
+
 @Repository
 @Mapper
 public interface MessageDao {
@@ -21,5 +24,8 @@ public interface MessageDao {
 
     //返回用户未读消息数量
     int nonReadMessage(String username);
+
+    List<Map<String,Object>> myQuery(int start, int each_num, String username);
+    int myQueryCount(String username);
 
 }

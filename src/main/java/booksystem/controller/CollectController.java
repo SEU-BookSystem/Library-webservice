@@ -19,7 +19,7 @@ public class CollectController {
     CollectService collectionService;
 
     //将书籍加入收藏夹
-    @RequestMapping("/collection/add")
+    @PostMapping("/collection/add")
     public Result addCollection(@RequestParam("reference_num") String reference_num,
                                 ServletRequest request)
     {
@@ -34,7 +34,7 @@ public class CollectController {
             return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
     }
 
-    @PostMapping("/collection/getByUser")
+    @RequestMapping("/collection/getByUser")
     public Result getCollectionByUser(ServletRequest request)
     {
         String token=((HttpServletRequest)request).getHeader("token");
