@@ -6,8 +6,6 @@ import booksystem.service.UploadImgService;
 import booksystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -23,15 +21,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserDao userDao;
     @Autowired
-    JavaMailSender mailSender;
-    @Autowired
     UploadImgService uploadImgService;
     @Autowired
     BookDao bookDao;
-
-    @Value("${spring.mail.username}")
-    String from;
-    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(10);
 
     @Override
     public List<Map<String,Object>> getAllUser() {

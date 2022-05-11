@@ -103,11 +103,11 @@
         </dependency>
 
 
-        <!--JMS依赖包-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
+<!--        &lt;!&ndash;JMS依赖包&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-mail</artifactId>-->
+<!--        </dependency>-->
 
 
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.jsoup/jsoup &ndash;&gt;-->
