@@ -14,7 +14,7 @@ public class PunishController {
     PunishService punishService;
 
 
-    @PostMapping("/punish/add")
+    @PostMapping("/admin/addPunish")
     public Result addPunish(@RequestParam("username") String username,
                             @RequestParam("bar_code") int bar_code,
                             @RequestParam("status") int status,
@@ -25,7 +25,7 @@ public class PunishController {
         return Result.ok();
     }
 
-    @PostMapping("/punish/update")
+    @PostMapping("/admin/updatePunish")
     public Result updatePunish(@RequestParam("punish_id") String punish_id,
                                @RequestParam("status") int status,
                                @RequestParam("detail") String detail,
@@ -35,7 +35,7 @@ public class PunishController {
         return Result.ok();
     }
 
-    @DeleteMapping("/punish/delete")
+    @DeleteMapping("/admin/deletePunish")
     public Result deletePunish(@RequestParam("punish_id") String punish_id){
         punishService.deletePunish(punish_id);
         return Result.ok();
