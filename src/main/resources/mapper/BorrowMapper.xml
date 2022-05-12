@@ -12,6 +12,10 @@
         select COUNT(*) from borrow where `status` in (1,2,4) and username=#{username}
     </select>
 
+    <select id="getById" resultType="Map">
+        select * from borrow where  lend_id=#{lend_id}
+    </select>
+
     <select id="getOvertimeBorrow" resultType="Map">
         select * from borrow where `status`=2 and username=#{username}
     </select>

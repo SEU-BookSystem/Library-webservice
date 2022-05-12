@@ -22,6 +22,9 @@ public interface BorrowDao {
     Map<String,Object> getBorrowByBarCode(int bar_code);
     Map<String,Object> getReserveByBarCode(int bar_code);
 
+    //根据lend_id查找借阅信息
+    Map<String,Object> getById(String lend_id);
+
     //更新状态
     void updateStatus(String lend_id,int status,int is_borrow);
     void renew(int bar_code);
