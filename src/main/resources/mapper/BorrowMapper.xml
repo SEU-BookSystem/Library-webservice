@@ -163,5 +163,82 @@
         </choose>
     </select>
 
+    <select id="queryBorrowing" resultType="java.util.HashMap">
+        SELECT * FROM borrow where username=#{username}
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0 and status=4 order by end_time DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1 and status in (1,2) order by FIELD(`status`,2,1),end_time DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==2">
+                and status in (2,1,4) order by FIELD(`status`,2,1,4),end_time DESC
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="queryBorrowed" resultType="java.util.HashMap">
+        SELECT * FROM borrow where username=#{username}
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0 and status=5
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1 and status=3
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==2">
+                and status in (3,5)
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by end_time DESC
+        limit #{start},#{each_num}
+    </select>
+
+    <select id="queryBorrowedCount" resultType="int">
+        SELECT count(*) FROM borrow where username=#{username}
+        <choose>
+            <when test="borrow_reserve==0">
+                and is_borrow=0 and status=5
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==1">
+                and is_borrow=1 and status=3
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="borrow_reserve==2">
+                and status in (3,5)
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
 
 </mapper>

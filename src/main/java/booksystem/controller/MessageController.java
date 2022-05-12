@@ -84,7 +84,7 @@ public class MessageController {
      * @param each_num 每页多少条数据
      * @return
      */
-    @RequestMapping("/message/query")
+    @RequestMapping("/user/message/query")
     public Result query(@RequestParam("page_num")int page_num,
                         @RequestParam("each_num")int each_num,
                         ServletRequest request
