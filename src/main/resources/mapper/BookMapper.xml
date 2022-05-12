@@ -314,8 +314,8 @@
         FROM book where 1=1
         <choose>
             <when test="queryWhat==0">
-                and (book_name like #{content} or author like #{content}
-                or publisher like #{content} or detail like #{content})
+                and (book_name like #{content} or isbn like #{content}
+                or reference_num like #{content} or author like #{content} or publisher like #{content})
             </when>
             <otherwise>
             </otherwise>

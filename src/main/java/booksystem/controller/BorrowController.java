@@ -216,4 +216,67 @@ public class BorrowController {
     }
 
 
+    /**
+     *
+     * @param borrow_reserve 0:预约，1：借阅 2：预约和借阅
+     * @param request
+     * @return
+     */
+    @RequestMapping("/user/borrow/queryBorrowing")
+    public Result queryBorrowing(
+                        @RequestParam("borrow_reserve")int borrow_reserve,
+                        ServletRequest request
+    ) {
+        String token=((HttpServletRequest)request).getHeader("token");
+        String username= TokenUtils.parseToken(token).get("username").toString();
+        List<Map<String,Object>> result=borrowDao.queryBorrowing(
+                borrow_reserve,username
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("start_time",result.get(i).get("start_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("end_time",result.get(i).get("end_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("data",result);
+    }
+
+    /**
+     * @param page_num 第几页
+     * @param each_num 每页多少条数据
+     * @return
+     */
+    @RequestMapping("/user/borrow/queryBorrowed")
+    public Result queryBorrowed(@RequestParam("page_num")int page_num,
+                                @RequestParam("each_num")int each_num,
+                                @RequestParam("borrow_reserve")int borrow_reserve,
+                                ServletRequest request
+    ) {
+        String token=((HttpServletRequest)request).getHeader("token");
+        String username= TokenUtils.parseToken(token).get("username").toString();
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=borrowDao.queryBorrowedCount(borrow_reserve,username);
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
+        }
+        List<Map<String,Object>> result=borrowDao.queryBorrowed(
+                (page_num-1)*each_num,each_num,borrow_reserve,username
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("start_time",result.get(i).get("start_time").toString()
+                    .replace('T',' '));
+            result.get(i).put("end_time",result.get(i).get("end_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
+    }
+
+
 }
