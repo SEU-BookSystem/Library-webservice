@@ -1,15 +1,11 @@
 package booksystem.service.Impl;
 
-import booksystem.dao.BookItemDao;
-import booksystem.dao.BorrowDao;
-import booksystem.dao.MessageDao;
-import booksystem.dao.UserDao;
+import booksystem.dao.*;
 import booksystem.pojo.Borrow;
 import booksystem.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +22,8 @@ public class BorrowServiceImp implements BorrowService {
     MessageDao messageDao;
     @Autowired
     UserDao userDao;
+    @Autowired
+    PunishDao punishDao;
 
     @Override
     public String[] countTime(int num){
@@ -245,6 +243,9 @@ public class BorrowServiceImp implements BorrowService {
         //发送逾期提醒
         messageDao.addMessage(username,"借阅通知",
                 "尊敬的会员,您借阅的书籍已逾期，请尽早归还，谢谢您的配合。");
+        //产生违规信息
+        Map<String,Object> book=borrowDao.getById(lend_id);
+        punishDao.addPunish(username,Integer.parseInt(book.get("bar_code").toString()),1,0,null,null);
         return 0;
     }
 

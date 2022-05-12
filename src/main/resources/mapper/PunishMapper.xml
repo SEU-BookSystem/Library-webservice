@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="booksystem.dao.PunishDao">
+    <insert id="addPunish">
+        insert into punish(punish_id,username,bar_code,update_time,`status`,is_handle,detail,money)
+        values(MD5(UUID()),#{username},#{bar_code},now(),#{status},#{is_handle},#{detail},#{money})
+    </insert>
+
+    <update id="updatePunish">
+        update punish set update_time=now(),status=#{status},is_handle=#{is_handle},detail=#{detail},money=#{money}
+        where punish_id=#{punish_id}
+    </update>
+
+    <delete id="deletePunish">
+        delete from punish where punish_id=#{punish_id}
+    </delete>
+
+    <select id="getPunishById" resultType="Map">
+        select * from punish where punish_id=#{punish_id}
+    </select>
+
+
+</mapper>
