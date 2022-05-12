@@ -75,5 +75,8 @@ public interface BookDao {
     //有关联错误待删
 //    void updateStatus(String shop_id);
 
+    //根据bar_code获得书名
+    String getBookNameByCode(int bar_code);
+
 
 }

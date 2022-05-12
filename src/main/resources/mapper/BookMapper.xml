@@ -43,6 +43,11 @@
         FROM book where book_name=#{book_name} ORDER BY update_time DESC
     </select>
 
+    <select id="getBookNameByCode" resultType="String">
+        SELECT book_name FROM book as a,bookitem as b
+        WHERE bar_code=#{bar_code} AND a.reference_num=b.reference_num
+    </select>
+
     <select id="getBookByPublisher" parameterType="String" resultType="booksystem.pojo.Book">
         SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
             (select category_name from category where category.category_id=book.category_id) as second_category

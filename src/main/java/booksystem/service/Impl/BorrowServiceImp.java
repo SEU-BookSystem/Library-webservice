@@ -24,6 +24,8 @@ public class BorrowServiceImp implements BorrowService {
     UserDao userDao;
     @Autowired
     PunishDao punishDao;
+    @Autowired
+    BookDao bookDao;
 
     @Override
     public String[] countTime(int num){
@@ -87,8 +89,9 @@ public class BorrowServiceImp implements BorrowService {
                     //更改书籍状态为4.预约
                     bookItemDao.updateStatus(bar_code, 4);
                     //发送预约成功信息
+                    String book_name=bookDao.getBookNameByCode(bar_code);
                     messageDao.addMessage(username,"预约通知",
-                            "尊敬的会员,您已成功预约书籍，注意预约时间，请在期限内到馆借阅，过期无效。");
+                            "尊敬的会员,您已成功预约《"+book_name+"》，注意预约时间，请在期限内到馆借阅，过期无效。");
                 }else {
                     //预约失败
                     //生成预约信息 状态为5.预约失败
@@ -97,8 +100,9 @@ public class BorrowServiceImp implements BorrowService {
                             0, 0, 5, null);
                     borrowDao.addBorrow(borrow);
                     //发送预约失败信息
+                    String book_name=bookDao.getBookNameByCode(Integer.parseInt(books.get(0).get("bar_code").toString()));
                     messageDao.addMessage(username,"预约通知",
-                            "尊敬的会员,您所预约书籍由于库存不足，暂时无法预约，对您造成的不便我们感到十分抱歉。");
+                            "尊敬的会员,您所预约书籍《"+book_name+"》由于库存不足，暂时无法预约，对您造成的不便我们感到十分抱歉。");
                 }
             }
             return 1;
@@ -114,6 +118,7 @@ public class BorrowServiceImp implements BorrowService {
         if (sum < 7) {
             //书籍要求：在馆且无人借阅无人预约
             List<Map<String, Object>> books = bookItemDao.getBookItemByReferenceNum(reference_num);
+            Map<String,Object> temp=bookDao.getBookByReferenceNum(reference_num);
 
             for (Map<String, Object> book : books) {
                 //查找bookitem status为2.可借的书籍
@@ -126,8 +131,9 @@ public class BorrowServiceImp implements BorrowService {
                     borrowDao.addBorrow(borrow);
                     //更改书籍状态为4.预约
                     bookItemDao.updateStatus(Integer.parseInt(book.get("bar_code").toString()), 4);
+                    String book_name=bookDao.getBookNameByCode(Integer.parseInt(book.get("bar_code").toString()));
                     messageDao.addMessage(username,"预约通知",
-                            "尊敬的会员,您已成功预约书籍，注意预约时间，请在期限内到馆借阅，过期无效。");
+                            "尊敬的会员,您已成功预约书籍《"+book_name+"》，注意预约时间，请在期限内到馆借阅，过期无效。");
                     return 1;
                 }
             }
@@ -147,8 +153,9 @@ public class BorrowServiceImp implements BorrowService {
             if(book.get("status").equals(1))
             {
                 borrowDao.renew(bar_code);
+                String book_name=bookDao.getBookNameByCode(bar_code);
                 messageDao.addMessage(username,"借阅通知",
-                        "尊敬的会员,您已成功续借该书籍，注意还书时间，请在期限内按时归还。");
+                        "尊敬的会员,您已成功续借《"+book_name+"》，请注意还书时间，请在期限内按时归还。");
                 return 1;
             }
             return 0;
@@ -179,8 +186,9 @@ public class BorrowServiceImp implements BorrowService {
                     borrowDao.addBorrow(borrow);
                     //修改书籍状态为3.已借
                     bookItemDao.updateStatus(bar_code,3);
+                    String book_name=bookDao.getBookNameByCode(bar_code);
                     messageDao.addMessage(username,"借阅通知",
-                            "尊敬的会员,您已成功借阅该书籍，注意还书时间，请在期限内按时归还。");
+                            "尊敬的会员,您已成功借阅《"+book_name+"》，注意还书时间，请在期限内按时归还。");
                     return 2;
                 }
                 return 1;//有逾期记录，不能借书
@@ -202,8 +210,9 @@ public class BorrowServiceImp implements BorrowService {
                     borrowDao.addBorrow(borrow);
                     //修改书籍状态为3.已借
                     bookItemDao.updateStatus(bar_code, 3);
+                    String book_name=bookDao.getBookNameByCode(bar_code);
                     messageDao.addMessage(username, "借阅通知",
-                            "尊敬的会员,您已成功借阅该书籍，注意还书时间，请在期限内按时归还。");
+                            "尊敬的会员,您已成功借阅《"+book_name+"》，注意还书时间，请在期限内按时归还。");
                     return 2;
                 }
                 return 1;
@@ -222,8 +231,9 @@ public class BorrowServiceImp implements BorrowService {
             borrowDao.updateStatus(book.get("lend_id").toString(), 3, 1);
             //更新书籍状态为1.在库
             bookItemDao.updateStatus(bar_code, 1);
+            String book_name=bookDao.getBookNameByCode(bar_code);
             messageDao.addMessage(username, "借阅通知",
-                    "尊敬的会员,您已成功还书，感谢您的配合。");
+                    "尊敬的会员,您已成功归还《"+book_name+"》，感谢您的配合。");
             return 1;
         }
         return 0;
@@ -240,12 +250,13 @@ public class BorrowServiceImp implements BorrowService {
         borrowDao.updateStatus(lend_id,2,1);
         //将用户状态从0.正常设置为1.违约
         userDao.updateStatus(username,1);
-        //发送逾期提醒
-        messageDao.addMessage(username,"借阅通知",
-                "尊敬的会员,您借阅的书籍已逾期，请尽早归还，谢谢您的配合。");
         //产生违规信息
         Map<String,Object> book=borrowDao.getById(lend_id);
         punishDao.addPunish(username,Integer.parseInt(book.get("bar_code").toString()),1,0,null,null);
+        //发送逾期提醒
+        String book_name=bookDao.getBookNameByCode(Integer.parseInt(book.get("bar_code").toString()));
+        messageDao.addMessage(username,"借阅通知",
+                "尊敬的会员,您借阅的书籍《"+book_name+"》已逾期，请尽早归还，谢谢您的配合。");
         return 0;
     }
 
