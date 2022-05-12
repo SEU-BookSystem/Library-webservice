@@ -6,7 +6,7 @@ public class Punish {
     int bar_code;
     String update_time;
     int status;//1.逾期 2.书籍损坏 3.书籍丢失
-    int is_handle;
+    int is_handle;//0：未处理  1：已处理
     String detail;
 
     public Punish() {
