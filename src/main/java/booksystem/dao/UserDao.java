@@ -31,4 +31,7 @@ public interface UserDao {
 
     List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content);
     int adminFuzzyQueryCount(int queryWhat, String content);
+
+    //修改密码
+    void updatePassword(String username,String password);
 }

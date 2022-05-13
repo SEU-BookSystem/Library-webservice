@@ -181,4 +181,12 @@ public class UserController {
         }
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
+
+    @PostMapping("/user/updatePassword")
+    public Result updatePassword(@RequestParam("username") String username,
+                                 @RequestParam("password") String password)
+    {
+        userDao.updatePassword(username,password);
+        return Result.ok();
+    }
 }

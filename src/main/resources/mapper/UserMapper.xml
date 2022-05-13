@@ -41,6 +41,10 @@
         update user set update_time=now() where username=#{username}
     </update>
 
+    <update id="updatePassword">
+        update user set password=#{password} where username=#{username}
+    </update>
+
     <update id="deleteUser" parameterType="String">
         delete from user where username=#{username}
     </update>
