@@ -2,6 +2,7 @@ package booksystem.service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public interface BorrowService {
     //计算时间
@@ -14,7 +15,7 @@ public interface BorrowService {
     int batCancelReserve(List<String> lend_ids);
 
     //收藏夹预约
-    int addCollectionReserve(List<String> reference_nums,String username);
+    Map<String,Object> addCollectionReserve(List<String> reference_nums, String username);
     //直接预约
     int addDirectReserve(String reference_num,String username);
 

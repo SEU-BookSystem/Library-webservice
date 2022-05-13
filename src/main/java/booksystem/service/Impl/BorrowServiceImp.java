@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BorrowServiceImp implements BorrowService {
@@ -56,7 +53,10 @@ public class BorrowServiceImp implements BorrowService {
 
     //收藏夹预约
     @Override
-    public int addCollectionReserve(List<String> reference_nums, String username) {
+    public Map<String,Object> addCollectionReserve(List<String> reference_nums, String username) {
+        //存储库存不足的书
+        ArrayList<String> book_names=new ArrayList<>();
+        Map<String,Object> results=new HashMap<>();
         //首先查询用户现在借阅书籍（已借未逾期+逾期+预约中）的数量  <7本
         int sum = borrowDao.getBorrowNumByUser(username);
         if((sum+reference_nums.size())<=7) {
@@ -103,11 +103,21 @@ public class BorrowServiceImp implements BorrowService {
                     String book_name=bookDao.getBookNameByCode(Integer.parseInt(books.get(0).get("bar_code").toString()));
                     messageDao.addMessage(username,"预约通知",
                             "尊敬的会员,您所预约书籍《"+book_name+"》由于库存不足，暂时无法预约，对您造成的不便我们感到十分抱歉。");
+                    book_names.add(book_name);
                 }
             }
-            return 1;
+            if(book_names!=null) {
+                results.put("result",0);
+                results.put("data",book_names);
+            }else {
+                results.put("result",1);
+                results.put("data",null);
+            }
+            return results;
         }
-        return -1;
+        results.put("result",-1);
+        results.put("data",null);
+        return results;
     }
 
     //直接预约

@@ -42,11 +42,14 @@ public class BorrowController {
     public Result addCollectionReserve(@RequestParam("reference_nums") List<String> reference_nums,
                                        @RequestParam("username") String username)
     {
-        int result=borrowService.addCollectionReserve(reference_nums,username);
+        Map<String,Object> results=borrowService.addCollectionReserve(reference_nums,username);
 
-        if(result==1)
+        if(results.get("result").equals(1))
             return Result.ok();
-        else if(result==-1)
+        else if(results.get("result").equals(0))
+            return Result.error(ResultEnum.BOOK_IS_NOT_ENOUGH.getCode(), ResultEnum.BOOK_IS_NOT_ENOUGH.getMsg())
+                    .put("data",results.get("data").toString());
+        else if(results.get("result").equals(-1))
             return Result.error(ResultEnum.BORROW_IS_MAX.getCode(),ResultEnum.BORROW_IS_MAX.getMsg());
         else
             return Result.error(ResultEnum.UNKNOWN_ERROR.getCode(),ResultEnum.UNKNOWN_ERROR.getMsg());
