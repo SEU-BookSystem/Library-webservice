@@ -313,6 +313,19 @@
         </choose>
     </select>
 
+
+    <select id="categoryQuery" resultType="java.util.HashMap">
+        SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
+        (select category_name from category where category.category_id=book.category_id) as second_category
+        FROM book where LEFT(category_id,1)=#{main_category_id}
+        order by LEFT(date,4) DESC
+        limit #{start},#{each_num}
+    </select>
+
+    <select id="categoryQueryCount" resultType="int">
+        SELECT count(*) FROM book where LEFT(category_id,1)=#{main_category_id}
+    </select>
+
     <select id="adminFuzzyQuery" resultType="java.util.HashMap">
         SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
         (select category_name from category where category.category_id=book.category_id) as second_category

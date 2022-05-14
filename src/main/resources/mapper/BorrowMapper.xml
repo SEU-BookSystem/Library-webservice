@@ -164,24 +164,24 @@
     </select>
 
     <select id="queryBorrowing" resultType="java.util.HashMap">
-        SELECT * FROM borrow where username=#{username}
+        SELECT * FROM borrow,bookitem,book where username=#{username} and borrow.bar_code=bookitem.bar_code and bookitem.reference_num=book.reference_num
         <choose>
             <when test="borrow_reserve==0">
-                and is_borrow=0 and status=4 order by end_time DESC
+                and is_borrow=0 and borrow.status=4 order by end_time DESC
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==1">
-                and is_borrow=1 and status in (1,2) order by FIELD(`status`,2,1),end_time DESC
+                and is_borrow=1 and borrow.status in (1,2) order by borrow.status desc ,end_time DESC
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==2">
-                and status in (2,1,4) order by FIELD(`status`,2,1,4),end_time DESC
+                and borrow.status in (1,2,4) order by borrow.status desc ,end_time DESC
             </when>
             <otherwise>
             </otherwise>

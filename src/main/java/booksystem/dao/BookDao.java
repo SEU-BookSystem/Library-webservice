@@ -51,6 +51,7 @@ public interface BookDao {
     List<Map<String,Object>> getMainPage(int start, int each_num, int category);
     List<Map<String,Object>> getNewBook(int num);
     List<Map<String,Object>> fuzzyQuery(int start, int each_num, int queryWhat, String content);
+    List<Map<String,Object>> categoryQuery(int start, int each_num, String main_category_id);
     List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content);
 
 
@@ -58,6 +59,8 @@ public interface BookDao {
     int getMainPageCount(int category);
     int fuzzyQueryCount(int queryWhat, String content);
     int adminFuzzyQueryCount(int queryWhat, String content);
+    int categoryQueryCount(String main_category_id);
+
 
 
     int getPageCount(String main_category_id, String second_category_id, String year, String year_before, String year_after, String shop_id);

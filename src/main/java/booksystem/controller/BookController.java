@@ -385,6 +385,35 @@ public class BookController {
         }
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
+
+    /**
+     * @param page_num 第几页
+     * @param each_num 每页多少书
+     * @param main_category_id 查询内容
+     * @return
+     */
+    @RequestMapping("/book/categoryQuery")
+    public Result categoryQuery(@RequestParam("page_num")int page_num,
+                             @RequestParam("each_num")int each_num,
+                             @RequestParam("main_category_id") String main_category_id//可缺省
+    ) {
+        if(page_num<=0||each_num<=0){
+            return Result.error(33,"数据必须为正");
+        }
+        int count=bookDao.categoryQueryCount(main_category_id);
+        int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
+        if(page_num>p_count&&p_count!=0){
+            return Result.error(34,"页数超过范围");
+        }
+        List<Map<String,Object>> result=bookDao.categoryQuery(
+                (page_num-1)*each_num,each_num,main_category_id
+        );
+        for(int i=0;i<result.size();i++){
+            result.get(i).put("update_time",result.get(i).get("update_time").toString()
+                    .replace('T',' '));
+        }
+        return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
+    }
 //
 //
 //    @RequestMapping("/book/fuzzyQueryCount")
