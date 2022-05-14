@@ -1,14 +1,6 @@
 package booksystem;
 
-import booksystem.pojo.Book;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-@SpringBootTest
 class BooksystemApplicationTests {
 //    @Autowired
 //    DataDao dataDao;
@@ -73,7 +65,7 @@ class BooksystemApplicationTests {
 //        return true;
 //    }
 
-    @Test
+//    @Test
     void contextLoads() {
 //        for(int tp=21;tp<21000;tp+=100){
 //            System.out.println(tp);

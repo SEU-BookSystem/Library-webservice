@@ -108,7 +108,7 @@ public class BorrowServiceImp implements BorrowService {
             }
             if(book_names!=null) {
                 results.put("result",0);
-                results.put("data",book_names);
+                results.put("data",Arrays.toString(book_names.toArray()).replace("[","").replace("]",""));
             }else {
                 results.put("result",1);
                 results.put("data",null);
