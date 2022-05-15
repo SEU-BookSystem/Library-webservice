@@ -41,13 +41,19 @@ public class BorrowServiceImp implements BorrowService {
     public int cancelReserve(String lend_id) {
         //将对应的状态改为5.预约失败
         borrowDao.updateStatus(lend_id,5,0);
+        //更新书籍的状态为2.在馆
+        Map<String,Object> book=borrowDao.getById(lend_id);
+        bookItemDao.updateStatus(Integer.parseInt(book.get("bar_code").toString()),2);
         return 0;
     }
 
     @Override
     public int batCancelReserve(List<String> lend_ids) {
-        for(String lend_id:lend_ids)
-            borrowDao.updateStatus(lend_id,5,0);
+        for(String lend_id:lend_ids) {
+            borrowDao.updateStatus(lend_id, 5, 0);
+            Map<String,Object> book=borrowDao.getById(lend_id);
+            bookItemDao.updateStatus(Integer.parseInt(book.get("bar_code").toString()),2);
+        }
         return 0;
     }
 
