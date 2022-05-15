@@ -193,7 +193,7 @@ public class BorrowServiceImp implements BorrowService {
             //借阅数量小于7本
             if(sum<7) {
                 //没有逾期记录
-                if(overtime==null) {
+                if(overtime.isEmpty()) {
                     //生成借书信息，状态为1.借阅未逾期
                     String str[]=countTime(14);
 
