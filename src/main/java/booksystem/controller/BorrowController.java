@@ -185,6 +185,7 @@ public class BorrowController {
      * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、
      * @param content 查询内容
      * @param borrow_reserve 0：预约  1：借阅
+     * @param is_history 0：正在借阅预约，1：借阅预约历史
      * @return
      */
     @RequestMapping("/admin/borrow/fuzzyQuery")
@@ -192,20 +193,21 @@ public class BorrowController {
                                   @RequestParam("each_num")int each_num,
                                   @RequestParam("queryWhat") int queryWhat,//可缺省
                                   @RequestParam("content") String content,//可缺省
-                                  @RequestParam("borrow_reserve")int borrow_reserve
+                                  @RequestParam("borrow_reserve")int borrow_reserve,
+                                  @RequestParam("is_history") int is_history
     ) {
 
-        if(page_num<=0||each_num<=0){
+        if(page_num<=0||each_num<=0||is_history<0||borrow_reserve<0){
             return Result.error(33,"数据必须为正");
         }
-        int count=borrowDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%",borrow_reserve);
+        int count=borrowDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%",borrow_reserve,is_history);
         int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
-        if(page_num>p_count&&p_count!=0){
+        if(page_num>p_count&&p_count!=0||is_history>1||borrow_reserve>1){
             return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=borrowDao.adminFuzzyQuery(
                 (page_num-1)*each_num,each_num,
-                queryWhat,"%"+content+"%",borrow_reserve
+                queryWhat,"%"+content+"%",borrow_reserve,is_history
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()

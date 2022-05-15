@@ -44,6 +44,14 @@
     <select id="adminFuzzyQuery" resultType="java.util.HashMap">
         SELECT * FROM borrow where 1=1
         <choose>
+            <when test="is_history==1">
+                and status in (3,5)
+            </when>
+            <otherwise>
+                and status in (1,2,4)
+            </otherwise>
+        </choose>
+        <choose>
             <when test="queryWhat==1">
                 and username like #{content}
             </when>
@@ -68,24 +76,31 @@
         </choose>
         <choose>
             <when test="borrow_reserve==0">
-                and is_borrow=0
+                and is_borrow=0 order by update_time DESC
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==1">
-                and is_borrow=1
+                and is_borrow=1 order by status DESC,update_time DESC
             </when>
             <otherwise>
             </otherwise>
         </choose>
-        order by update_time DESC
         limit #{start},#{each_num}
     </select>
 
     <select id="adminFuzzyQueryCount" resultType="int">
         SELECT count(*) FROM borrow where 1=1
+        <choose>
+            <when test="is_history==1">
+                and status in (3,5)
+            </when>
+            <otherwise>
+                and status in (1,2,4)
+            </otherwise>
+        </choose>
         <choose>
             <when test="queryWhat==1">
                 and username like #{content}
@@ -189,24 +204,24 @@
     </select>
 
     <select id="queryBorrowed" resultType="java.util.HashMap">
-        SELECT * FROM borrow where username=#{username}
+        SELECT * FROM borrow,bookitem,book where username=#{username} and borrow.bar_code=bookitem.bar_code and bookitem.reference_num=book.reference_num
         <choose>
             <when test="borrow_reserve==0">
-                and is_borrow=0 and status=5
+                and is_borrow=0 and borrow.status=5
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==1">
-                and is_borrow=1 and status=3
+                and is_borrow=1 and borrow.status=3
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==2">
-                and status in (3,5)
+                and borrow.status in (3,5)
             </when>
             <otherwise>
             </otherwise>
@@ -216,24 +231,24 @@
     </select>
 
     <select id="queryBorrowedCount" resultType="int">
-        SELECT count(*) FROM borrow where username=#{username}
+        SELECT count(*) FROM borrow,bookitem,book where username=#{username} and borrow.bar_code=bookitem.bar_code and bookitem.reference_num=book.reference_num
         <choose>
             <when test="borrow_reserve==0">
-                and is_borrow=0 and status=5
+                and is_borrow=0 and borrow.status=5
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==1">
-                and is_borrow=1 and status=3
+                and is_borrow=1 and borrow.status=3
             </when>
             <otherwise>
             </otherwise>
         </choose>
         <choose>
             <when test="borrow_reserve==2">
-                and status in (3,5)
+                and borrow.status in (3,5)
             </when>
             <otherwise>
             </otherwise>
