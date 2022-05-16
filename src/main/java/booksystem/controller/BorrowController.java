@@ -138,6 +138,14 @@ public class BorrowController {
         return Result.ok();
     }
 
+    @PostMapping("/admin/setReserveOvertime")
+    public Result setReserveOvertime(@RequestParam("username") String username,
+                                     @RequestParam("lend_id") String lend_id)
+    {
+        borrowService.ReserveOvertime(username,lend_id);
+        return Result.ok();
+    }
+
     @PostMapping("/admin/handleBorrowOvertime")
     public Result handleBookOvertime(@RequestParam("username") String username,
                                      @RequestParam("lend_id") String lend_id)

@@ -35,4 +35,6 @@ public interface BorrowService {
     int setBookOvertime(String username,String lend_id);
     //管理员处理逾期
     int handleBookOvertime(String username, String lend_id);
+    //管理员设置预约过期
+    int ReserveOvertime(String username,String lend_id);
 }

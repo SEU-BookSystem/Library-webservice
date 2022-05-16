@@ -276,12 +276,28 @@ public class BorrowServiceImp implements BorrowService {
         return 0;
     }
 
+
+
     @Override
     public int handleBookOvertime(String username, String lend_id) {
         List<Map<String,Object>> overtime=borrowDao.getOvertimeBorrow(username);
         if(overtime.size()==1) {
             userDao.updateStatus(username,0);
         }
+        return 0;
+    }
+
+    @Override
+    public int ReserveOvertime(String username, String lend_id) {
+        //将借阅状态更改为5.预约失败
+        borrowDao.updateStatus(lend_id,5,0);
+        //将书籍状态更改为2.可借
+        Map<String,Object> book=borrowDao.getById(lend_id);
+        bookItemDao.updateStatus(Integer.parseInt(book.get("bar_code").toString()),2);
+        //发送过期消息
+        String book_name=bookDao.getBookNameByCode(Integer.parseInt(book.get("bar_code").toString()));
+        messageDao.addMessage(username,"借阅通知",
+                "尊敬的会员,您借阅的书籍《"+book_name+"》已逾期，请尽早归还，谢谢您的配合。");
         return 0;
     }
 }
