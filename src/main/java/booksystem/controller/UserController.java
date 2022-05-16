@@ -134,9 +134,7 @@ public class UserController {
                              @RequestParam("age") String age,
                              @RequestParam("gender") String gender,
                              @RequestParam("id_card") String id_card,
-                             ServletRequest request){
-        String token=((HttpServletRequest)request).getHeader("token");
-        String username= TokenUtils.parseToken(token).get("username").toString();
+                             @RequestParam("username") String username){
         int result=userService.updateUser(username,password,name,Integer.parseInt(age),gender,id_card);
         if(result!=0)
         {
