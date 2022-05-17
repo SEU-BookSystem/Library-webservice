@@ -84,4 +84,57 @@
     <select id="getBookItemNumByStatus" resultType="int">
         select count(*) from bookitem where status=#{status}
     </select>
+
+
+    <select id="getBookItem" resultType="java.util.HashMap">
+        SELECT * FROM bookitem where 1=1
+        <choose>
+            <when test="style==1">
+
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="style==2">
+                and reference_num=#{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="style==3">
+                and bar_code=#{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        order by bar_code DESC
+        limit #{start},#{each_num}
+    </select>
+
+    <select id="getBookItemCount" resultType="int">
+        SELECT count(*) FROM bookitem where 1=1
+        <choose>
+            <when test="style==1">
+
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="style==2">
+                and reference_num=#{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="style==3">
+                and bar_code=#{content}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
 </mapper>
