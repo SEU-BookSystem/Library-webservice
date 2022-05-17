@@ -291,5 +291,9 @@ public class BorrowController {
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 
-
+    @RequestMapping("/admin/getBorrowNumByStatus")
+    public Result getBorrowNumByStatus(@RequestParam("number") int number)
+    {
+        return Result.ok().put("data",borrowService.getNumByStatus(number));
+    }
 }

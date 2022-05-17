@@ -42,5 +42,7 @@ public interface BorrowDao {
     int queryCount(int borrow_reserve);
     int queryBorrowedCount(int borrow_reserve,String username);
 
+    //获取不同状态下的记录数量
+    int getNumByStatus(int status);
 
 }

@@ -20,6 +20,10 @@
         select * from borrow where `status`=2 and username=#{username}
     </select>
 
+    <select id="getNumByStatus" resultType="int">
+        select count(*) from borrow where `status`=#{status}
+    </select>
+
     <update id="updateStatus" >
         update borrow set is_borrow=#{is_borrow},`status`=#{status},update_time=now() where lend_id=#{lend_id}
     </update>

@@ -37,4 +37,7 @@ public interface BorrowService {
     int handleBookOvertime(String username, String lend_id);
     //管理员设置预约过期
     int ReserveOvertime(String username,String lend_id);
+
+    //获取不同状态下的记录数量
+    int getNumByStatus(int number);
 }

@@ -300,4 +300,20 @@ public class BorrowServiceImp implements BorrowService {
                 "尊敬的会员,您借阅的书籍《"+book_name+"》已逾期，请尽早归还，谢谢您的配合。");
         return 0;
     }
+
+    @Override
+    public int getNumByStatus(int number) {
+        int num=0;
+        //number=1 表示正在预约
+        if(number==1) {
+            num=borrowDao.getNumByStatus(4);
+        }else if(number==2){
+            //正在借阅（1 2）
+            num=borrowDao.getNumByStatus(1)+borrowDao.getNumByStatus(2);
+        }else if(number==3){
+            //3 历史借阅
+            num=borrowDao.getNumByStatus(3);
+        }
+        return num;
+    }
 }
