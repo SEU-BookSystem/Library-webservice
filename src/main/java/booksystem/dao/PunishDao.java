@@ -17,11 +17,11 @@ public interface PunishDao {
 
     Map<String,Object> getPunishById(String punish_id);
 
-    List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content);
-    List<Map<String,Object>> adminQuery(int start, int each_num);
+    List<Map<String,Object>> adminFuzzyQuery(int start, int each_num, int queryWhat, String content,int is_handle);
+    List<Map<String,Object>> adminQuery(int start, int each_num,int is_handle);
     List<Map<String,Object>> userQuery(int start, int each_num,String username);
 
-    int adminFuzzyQueryCount(int queryWhat, String content);
-    int adminQueryCount();
+    int adminFuzzyQueryCount(int queryWhat, String content,int is_handle);
+    int adminQueryCount(int is_handle);
     int userQueryCount(String username);
 }

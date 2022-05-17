@@ -59,26 +59,28 @@ public class PunishController {
      * @param each_num 每页多少条数据
      * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、
      * @param content 查询内容
+     * @param is_handle //0：未处理  1：已处理
      * @return
      */
     @RequestMapping("/admin/punish/fuzzyQuery")
     public Result adminFuzzyQuery(@RequestParam("page_num")int page_num,
                                   @RequestParam("each_num")int each_num,
                                   @RequestParam("queryWhat") int queryWhat,//可缺省
-                                  @RequestParam("content") String content//可缺省
+                                  @RequestParam("content") String content,//可缺省
+                                  @RequestParam("is_handle") int is_handle
     ) {
 
         if(page_num<=0||each_num<=0){
             return Result.error(33,"数据必须为正");
         }
-        int count=punishDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%");
+        int count=punishDao.adminFuzzyQueryCount(queryWhat,"%"+content+"%",is_handle);
         int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
         if(page_num>p_count&&p_count!=0){
             return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=punishDao.adminFuzzyQuery(
                 (page_num-1)*each_num,each_num,
-                queryWhat,"%"+content+"%"
+                queryWhat,"%"+content+"%",is_handle
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
@@ -121,22 +123,24 @@ public class PunishController {
     /**
      * @param page_num 第几页
      * @param each_num 每页多少条数据
+     * @param is_handle //0：未处理  1：已处理
      * @return
      */
     @RequestMapping("/admin/punish/query")
     public Result adminQuery(@RequestParam("page_num")int page_num,
-                        @RequestParam("each_num")int each_num
+                             @RequestParam("each_num")int each_num,
+                             @RequestParam("is_handle") int is_handle
     ) {
         if(page_num<=0||each_num<=0){
             return Result.error(33,"数据必须为正");
         }
-        int count=punishDao.adminQueryCount();
+        int count=punishDao.adminQueryCount(is_handle);
         int p_count=(count%each_num==0)?(count/each_num):(count/each_num+1);
         if(page_num>p_count&&p_count!=0){
             return Result.error(34,"页数超过范围");
         }
         List<Map<String,Object>> result=punishDao.adminQuery(
-                (page_num-1)*each_num,each_num
+                (page_num-1)*each_num,each_num,is_handle
         );
         for(int i=0;i<result.size();i++){
             result.get(i).put("update_time",result.get(i).get("update_time").toString()
