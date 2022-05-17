@@ -14,4 +14,7 @@ public interface PunishService {
     //删除违规记录
     int deletePunish(String punish_id);
 
+    //获取不同状态下的记录数量
+    int getNumByStatus(int number);
+
 }

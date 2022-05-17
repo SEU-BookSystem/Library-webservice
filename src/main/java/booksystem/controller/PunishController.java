@@ -149,4 +149,10 @@ public class PunishController {
         return Result.ok(ResultEnum.SUCCESS.getMsg()).put("page_count",p_count).put("data",result);
     }
 
+    @RequestMapping("/admin/getPunishNumByStatus")
+    public Result getPunishNumByStatus(@RequestParam("number") int number)
+    {
+        return Result.ok().put("data",punishService.getNumByStatus(number));
+    }
+
 }

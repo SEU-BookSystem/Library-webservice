@@ -24,4 +24,7 @@ public interface PunishDao {
     int adminFuzzyQueryCount(int queryWhat, String content,int is_handle);
     int adminQueryCount(int is_handle);
     int userQueryCount(String username);
+
+    //获取不同状态下的记录数量
+    int getNumByStatus(int status);
 }

@@ -59,4 +59,9 @@ public class PunishServiceImpl implements PunishService {
         punishDao.deletePunish(punish_id);
         return 0;
     }
+
+    @Override
+    public int getNumByStatus(int number) {
+        return punishDao.getNumByStatus(number);
+    }
 }

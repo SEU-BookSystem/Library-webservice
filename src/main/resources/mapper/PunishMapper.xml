@@ -20,6 +20,10 @@
         select * from punish where punish_id=#{punish_id}
     </select>
 
+    <select id="getNumByStatus" resultType="int">
+        select count(*) from punish where is_handle=#{status}
+    </select>
+
 
     <select id="adminFuzzyQuery" resultType="java.util.HashMap">
         SELECT * FROM punish where 1=1 and is_handle=#{is_handle}
