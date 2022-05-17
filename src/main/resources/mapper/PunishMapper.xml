@@ -31,7 +31,7 @@
             <when test="queryWhat==0">
                 and (username like #{content} or bar_code in (select bar_code from bookitem where reference_num in
                 (select reference_num from book where book_name like #{content})) or bar_code in (select bar_code from bookitem where reference_num in
-                (select reference_num from book where isbn like #{content})))
+                (select reference_num from book where isbn like #{content})) or bar_code like #{content})
             </when>
             <otherwise>
             </otherwise>
@@ -55,6 +55,13 @@
             <when test="queryWhat==3">
                 and bar_code in (select bar_code from bookitem where reference_num in
                 (select reference_num from book where isbn like #{content}))
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and bar_code like #{content}
             </when>
             <otherwise>
             </otherwise>
@@ -68,8 +75,10 @@
         <choose>
             <when test="queryWhat==0">
                 and (username like #{content} or bar_code in (select bar_code from bookitem where reference_num in
-                (select reference_num from book where book_name like #{content})) or bar_code in (select bar_code from bookitem where reference_num in
-                (select reference_num from book where isbn like #{content})))
+                (select reference_num from book where book_name like #{content})) or
+                     bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where isbn like #{content})) or bar_code like #{content}
+                    )
             </when>
             <otherwise>
             </otherwise>
@@ -93,6 +102,13 @@
             <when test="queryWhat==3">
                 and bar_code in (select bar_code from bookitem where reference_num in
                 (select reference_num from book where isbn like #{content}))
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==4">
+                and bar_code like #{content}
             </when>
             <otherwise>
             </otherwise>

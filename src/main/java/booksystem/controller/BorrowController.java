@@ -190,7 +190,7 @@ public class BorrowController {
     /**
      * @param page_num 第几页
      * @param each_num 每页多少条数据
-     * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、
+     * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、4:条码号
      * @param content 查询内容
      * @param borrow_reserve 0：预约  1：借阅
      * @param is_history 0：正在借阅预约，1：借阅预约历史

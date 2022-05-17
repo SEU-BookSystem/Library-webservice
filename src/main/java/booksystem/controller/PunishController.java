@@ -57,7 +57,7 @@ public class PunishController {
     /**
      * @param page_num 第几页
      * @param each_num 每页多少条数据
-     * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、
+     * @param queryWhat 查询: 1:读者姓名、2:书籍名称、3:ISBN、4:条码号
      * @param content 查询内容
      * @param is_handle //0：未处理  1：已处理
      * @return
