@@ -56,6 +56,15 @@
             </otherwise>
         </choose>
         <choose>
+            <when test="queryWhat==0">
+                and (username like #{content} or bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where book_name like #{content})) or bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where isbn like #{content})))
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <choose>
             <when test="queryWhat==1">
                 and username like #{content}
             </when>
@@ -103,6 +112,15 @@
             </when>
             <otherwise>
                 and status in (1,2,4)
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="queryWhat==0">
+                and (username like #{content} or bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where book_name like #{content})) or bar_code in (select bar_code from bookitem where reference_num in
+                (select reference_num from book where isbn like #{content})))
+            </when>
+            <otherwise>
             </otherwise>
         </choose>
         <choose>
