@@ -91,4 +91,11 @@ public class BookItemController {
         bookItemService.bookShelf(bar_codes);
         return Result.ok();
     }
+
+    @PostMapping("/admin/bookUnshelf")
+    public Result bookUnshelf(@RequestParam("bar_codes") List<Integer> bar_codes)
+    {
+        bookItemService.bookUnshelf(bar_codes);
+        return Result.ok();
+    }
 }

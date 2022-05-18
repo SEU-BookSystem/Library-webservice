@@ -52,9 +52,9 @@ public class BookItemServiceImp implements BookItemService {
     public int deleteBookItem(int bar_code) {
         if(bookItemDao.getBookItemByBarCode(bar_code)==null)
             return 0;
-        bookItemDao.deleteBookItem(bar_code);
         Map<String,Object> bookitem=bookItemDao.getBookItemByBarCode(bar_code);
         bookDao.updateBookNum(bookitem.get("reference_num").toString(),1);
+        bookItemDao.deleteBookItem(bar_code);
         return 1;
     }
 
@@ -78,6 +78,19 @@ public class BookItemServiceImp implements BookItemService {
                 //将1.在库 更改为2.可借
                 if (bookitem.get("status").equals(1)) {
                     bookItemDao.updateStatus(bar_code, 2);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void bookUnshelf(List<Integer> bar_codes) {
+        for (int bar_code:bar_codes){
+            Map<String,Object>bookitem=bookItemDao.getBookItemByBarCode(bar_code);
+            if(bookitem!=null) {
+                //将1.在库 更改为2.可借
+                if (bookitem.get("status").equals(2)) {
+                    bookItemDao.updateStatus(bar_code, 1);
                 }
             }
         }

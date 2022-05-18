@@ -26,5 +26,6 @@ public interface BookItemService {
 
     //批量图书上架
     void bookShelf(List<Integer> bar_codes);
-
+    //批量图书下架
+    void bookUnshelf(List<Integer> bar_codes);
 }
