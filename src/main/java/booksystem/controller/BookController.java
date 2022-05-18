@@ -97,8 +97,6 @@ public class BookController {
                 BookItem bookItem=new BookItem(0,ref,1,"我爱读书一号馆");
                 bookItemDao.addBookItem(bookItem);
             }
-
-            bookDao.updateBookNum(ref,-num);
         }else{
             for(int i=0;i<num;i++){
                 BookItem bookItem=new BookItem(0,m1.get("reference_num").toString(),1,"我爱读书一号馆");
