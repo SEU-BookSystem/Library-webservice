@@ -64,7 +64,7 @@ public class BookController {
         return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 
-    //单本删除
+
     @PostMapping("/admin/book/addBook")
     public Result addBook(@RequestParam("book_name") String book_name,
                           @RequestParam("author") String author,
@@ -98,15 +98,41 @@ public class BookController {
                 bookItemDao.addBookItem(bookItem);
             }
         }else{
+//            for(int i=0;i<num;i++){
+//                BookItem bookItem=new BookItem(0,m1.get("reference_num").toString(),1,"我爱读书一号馆");
+//                bookItemDao.addBookItem(bookItem);
+//            }
+            //bookDao.updateBookNum(m1.get("reference_num").toString(),-num);
+            return Result.error(301,"书籍已经存在");
+        }
+
+        return Result.ok(ResultEnum.SUCCESS.getMsg());
+    }
+
+
+
+    @PostMapping("/admin/book/addBookNum")
+    public Result addBookNum(
+                          @RequestParam("isbn") String isbn,
+                          @RequestParam("num") int num) {
+        if(isbn.isEmpty()) {
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(), ResultEnum.DATA_IS_NULL.getMsg());
+        }
+        if(num<=0) {
+            return Result.error(ResultEnum.DATA_IS_NULL.getCode(), "num必须大于0");
+        }
+        Map<String,Object>m1=bookDao.getBookByIsbn(isbn);
+        if(m1==null){
+            return Result.error(21,"书籍不存在");
+        }else{
             for(int i=0;i<num;i++){
                 BookItem bookItem=new BookItem(0,m1.get("reference_num").toString(),1,"我爱读书一号馆");
                 bookItemDao.addBookItem(bookItem);
             }
             bookDao.updateBookNum(m1.get("reference_num").toString(),-num);
-            return Result.error(201,"书籍已经存在，书目已入库，书籍信息未更改");
+            return Result.ok(ResultEnum.SUCCESS.getMsg());
         }
 
-        return Result.ok(ResultEnum.SUCCESS.getMsg());
     }
 
 

@@ -109,7 +109,7 @@
     </delete>
 
     <update id="updateBookNum">
-        update book set num=(num-#{num}) where reference_num=#{reference_num}
+        update book set num=(select count(*) from bookitem where reference_num=#{reference_num}) where reference_num=#{reference_num}
     </update>
 
 
