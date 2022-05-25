@@ -23,7 +23,7 @@ public class BorrowController {
     @Autowired
     BorrowDao borrowDao;
 
-    @PostMapping("/book/addReserve")
+    @PostMapping("/user/book/addReserve")
     public Result addDirectReserve(@RequestParam("reference_num") String reference_num,
                                    @RequestParam("username") String username)
     {
