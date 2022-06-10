@@ -226,7 +226,7 @@
         SELECT *,(select category_name from category where category.category_id=LEFT(book.category_id,1)) as main_category,
             (select category_name from category where category.category_id=book.category_id) as second_category
         FROM book
-        order by LEFT(update_time,4) DESC
+        order by update_time DESC
         limit 0,#{num}
     </select>
 
