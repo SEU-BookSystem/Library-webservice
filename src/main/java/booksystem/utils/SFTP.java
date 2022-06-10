@@ -93,7 +93,7 @@ public class SFTP {
             String prefix=fileName.substring(fileName.lastIndexOf("."));// 获取文件后缀
             file = File.createTempFile(String.valueOf(UUID.randomUUID()).
                     replace("-","").toUpperCase(Locale.ROOT), prefix);
-
+            System.out.println(file.getPath());
             multipartFile.transferTo(file);
         }catch (IOException e){
             e.printStackTrace();
